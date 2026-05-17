@@ -1,0 +1,137 @@
+ 
+ *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            background-color: #fff5ee;
+        }
+
+        header{
+            background-color: rgb(2, 2, 75);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav{
+            background-color: rgb(121, 88, 4) ;
+            padding: 15px;
+            text-align: center;
+        }
+
+        nav a{
+            color: white;
+            text-decoration: none;
+            margin: 15px;
+            font-weight: bold;
+        }
+
+        .hero{
+            height: 350px;
+            background: url('Gemini_Generated_Image_vqelthvqelthvqel (1).png') center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-shadow: 2px 2px 5px black;
+            text-align: center;
+        }
+
+        .hero h1{
+            font-size: 50px;
+        }
+
+        .container{
+            width: 90%;
+            margin: auto;
+            padding: 40px 0;
+        }
+
+        .section-title{
+            text-align: center;
+            color: orangered;
+            margin-bottom: 30px;
+            font-size: 35px;
+        }
+
+        .menu{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .card{
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: 0.3s;
+        }
+
+        .card:hover{
+            transform: scale(1.03);
+        }
+
+        .card img{
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content{
+            padding: 20px;
+            text-align: center;
+        }
+
+        .price{
+            color: orangered;
+            font-size: 22px;
+            margin: 10px 0;
+        }
+
+        button{
+            background-color: orangered;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover{
+            background-color: #e64a19;
+        }
+
+        .about, .contact{
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-top: 40px;
+        }
+
+        footer{
+    background-color: orangered;
+    width: 1140px;
+    padding: 25px;
+    text-align: center;
+    color: white;
+    font-size: 20px;
+    margin-top: 40px;
+}
+
+        #order-list{
+            margin-top: 20px;
+        }
+
+        #total{
+            font-size: 22px;
+            margin-top: 15px;
+            color: orangered;
+            font-weight: bold;
+        }
