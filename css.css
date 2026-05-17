@@ -1,0 +1,263 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    background-color: #fff5ee;
+}
+
+/* HEADER */
+
+header{
+    background-color: rgb(2, 2, 75);
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+/* NAVIGATION */
+
+nav{
+    background-color: rgb(121, 88, 4);
+    padding: 15px;
+    text-align: center;
+}
+
+nav a{
+    color: white;
+    text-decoration: none;
+    margin: 15px;
+    font-weight: bold;
+}
+
+/* HERO */
+
+.hero{
+    height: 350px;
+
+    background: url('Gemini_Generated_Image_vqelthvqelthvqel (1).png');
+
+    background-position: center;
+    background-size: cover;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: white;
+
+    text-shadow: 2px 2px 5px black;
+
+    text-align: center;
+}
+
+.hero h1{
+    font-size: 50px;
+}
+
+/* CONTAINER */
+
+.container{
+    width: 90%;
+    margin: auto;
+    padding: 40px 0;
+}
+
+/* TITLES */
+
+.section-title{
+    text-align: center;
+    color: orangered;
+    margin-bottom: 30px;
+    font-size: 35px;
+}
+
+/* MENU */
+
+.menu{
+    display: flex;
+
+    justify-content: center;
+
+    align-items: flex-start;
+
+    flex-wrap: wrap;
+
+    gap: 30px;
+}
+
+/* CARD */
+
+.card{
+    width: 350px;
+
+    background: white;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+    transition: 0.3s;
+}
+
+.card:hover{
+    transform: scale(1.03);
+}
+
+/* CARD IMAGE */
+
+.card img{
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+/* CARD CONTENT */
+
+.card-content{
+    padding: 20px;
+    text-align: center;
+}
+
+/* PRICE */
+
+.price{
+    color: orangered;
+    font-size: 22px;
+    margin: 10px 0;
+}
+
+/* BUTTON */
+
+button{
+    background-color: orangered;
+
+    color: white;
+
+    border: none;
+
+    padding: 10px 20px;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+}
+
+button:hover{
+    background-color: #e64a19;
+}
+
+/* ORDER BOX */
+
+.about{
+    width: 350px;
+
+    background-color: white;
+
+    padding: 30px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+    margin: 40px auto;
+
+    text-align: center;
+}
+
+/* CONTACT */
+
+.contact{
+    background-color: white;
+
+    padding: 30px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+    margin-top: 40px;
+
+    text-align: center;
+}
+
+/* FOOTER */
+
+footer{
+    background-color: orangered;
+
+    width: 100%;
+
+    padding: 25px;
+
+    text-align: center;
+
+    color: white;
+
+    font-size: 20px;
+
+    margin-top: 40px;
+}
+
+/* ORDER LIST */
+
+#order-list{
+    margin-top: 20px;
+}
+
+/* TOTAL */
+
+#total{
+    font-size: 22px;
+
+    margin-top: 15px;
+
+    color: orangered;
+
+    font-weight: bold;
+}
+
+/* MOBILE RESPONSIVE */
+
+@media(max-width:768px){
+
+    nav{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .hero{
+        height: 250px;
+        padding: 20px;
+    }
+
+    .hero h1{
+        font-size: 35px;
+    }
+
+    .menu{
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card{
+        width: 90%;
+    }
+
+    .about{
+        width: 90%;
+    }
+
+    footer{
+        font-size:16px;
+        padding:20px;
+    }
+}
