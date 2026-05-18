@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQUIRIZO</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    padding-left:600px;
+
+    background-image: url('login_cover.jpeg');
+    background-size: cover;
+    background-position: center;
+}
+
+/* FORM */
+
+.container{
+    width:350px;
+    padding:30px;
+    border-radius:20px;
+
+    background: rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(8px);
+
+    border:1px solid rgba(255,255,255,0.2);
+
+    box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.logo h1{
+    color:white;
+    font-size:35px;
+}
+
+.form-box h2{
+    text-align:center;
+    margin-bottom:20px;
+    color:white;
+}
+
+.input-box{
+    position:relative;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+
+    background: rgba(255,255,255,0.2);
+
+    color:white;
+
+    border:1px solid rgba(255,255,255,0.5);
+
+    font-size:16px;
+}
+
+input::placeholder{
+    color:white;
+}
+
+/* EYE ICON */
+
+.eye{
+
+    position:absolute;
+
+    right:15px;
+
+    top:23px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-size:18px;
+}
+
+/* PASSWORD RULES */
+
+.password-rules{
+
+    color:#ffe082;
+
+    font-size:13px;
+
+    margin-top:-5px;
+
+    margin-bottom:10px;
+
+    line-height:1.6;
+}
+
+/* BUTTON */
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    background:orangered;
+    color:white;
+    font-size:18px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+button:hover{
+    background:#e64a19;
+}
+
+/* TOGGLE TEXT */
+
+.toggle-text{
+    text-align:center;
+    margin-top:15px;
+    color:white;
+}
+
+.toggle-text a{
+    color:yellow;
+    text-decoration:none;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* FORGOT PASSWORD */
+
+.forgot{
+    color:yellow;
+    text-align:center;
+    margin-top:10px;
+    cursor:pointer;
+    font-size:14px;
+}
+
+/* SUCCESS */
+
+.success{
+    color:lightgreen;
+    text-align:center;
+    margin-top:10px;
+    font-weight:bold;
+}
+
+#errorMessage{
+    color:#ffb3b3;
+    text-align:center;
+    margin-top:10px;
+}
+
+/* HIDE REGISTER */
+
+#registerForm{
+    display:none;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    body{
+
+        justify-content:center;
+
+        padding-left:0;
+
+        padding:20px;
+    }
+
+    .container{
+
+        width:100%;
+
+        max-width:350px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="logo">
+
+            <h1>SQUIRIZO</h1>
+
+        </div>
+
+        <!-- LOGIN -->
+
+        <div class="form-box" id="loginForm">
+
+            <h2>Login</h2>
+
+            <input type="email"
+            id="loginEmail"
+            placeholder="Enter Email">
+
+            <div class="input-box">
+
+                <input type="password"
+                id="loginPassword"
+                placeholder="Enter Password">
+
+                <span class="eye"
+                onclick="togglePassword('loginPassword', this)">
+                🙈
+                </span>
+
+            </div>
+
+            <button onclick="login()">
+                Login
+            </button>
+
+            <p class="forgot"
+            onclick="forgotPassword()">
+                Forgot Password?
+            </p>
+
+            <div class="toggle-text">
+
+                Don't have an account?
+
+                <a onclick="showRegister()">
+                    Register
+                </a>
+
+            </div>
+
+            <p id="loginMessage"
+            class="success"></p>
+
+            <p id="errorMessage"></p>
+
+        </div>
+
+        <!-- REGISTER -->
+
+        <div class="form-box"
+        id="registerForm">
+
+            <h2>Register</h2>
+
+            <input type="text"
+            id="registerName"
+            placeholder="Full Name">
+
+            <input type="email"
+            id="registerEmail"
+            placeholder="Enter Email">
+
+            <div class="input-box">
+
+                <input type="password"
+                id="registerPassword"
+                placeholder="Create Password">
+
+                <span class="eye"
+                onclick="togglePassword('registerPassword', this)">
+                🙈
+                </span>
+
+            </div>
+
+            <!-- PASSWORD RULES -->
+
+            <div class="password-rules">
+
+                • Minimum 8 characters <br>
+                • 1 uppercase letter <br>
+                • 1 lowercase letter <br>
+                • 1 number
+
+            </div>
+
+            <button onclick="register()">
+                Register
+            </button>
+
+            <div class="toggle-text">
+
+                Already have an account?
+
+                <a onclick="showLogin()">
+                    Login
+                </a>
+
+            </div>
+
+            <p id="registerMessage"
+            class="success"></p>
+
+        </div>
+
+    </div>
+
+<script>
+
+    // SHOW REGISTER
+
+    function showRegister(){
+
+        document.getElementById('loginForm').style.display =
+        'none';
+
+        document.getElementById('registerForm').style.display =
+        'block';
+    }
+
+    // SHOW LOGIN
+
+    function showLogin(){
+
+        document.getElementById('registerForm').style.display =
+        'none';
+
+        document.getElementById('loginForm').style.display =
+        'block';
+    }
+
+    // TOGGLE PASSWORD
+
+    function togglePassword(id, eye){
+
+        let input =
+        document.getElementById(id);
+
+        if(input.type === "password"){
+
+            input.type = "text";
+
+            eye.innerHTML = "👁️";
+
+        }else{
+
+            input.type = "password";
+
+            eye.innerHTML = "🙈";
+        }
+    }
+
+    // REGISTER
+
+    function register(){
+
+        let name =
+        document.getElementById('registerName').value;
+
+        let email =
+        document.getElementById('registerEmail').value;
+
+        let password =
+        document.getElementById('registerPassword').value;
+
+        // EMPTY CHECK
+
+        if(name === '' ||
+           email === '' ||
+           password === ''){
+
+            alert('Please fill up all fields');
+
+            return;
+        }
+
+        // PASSWORD VALIDATION
+
+        let pattern =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+        if(!pattern.test(password)){
+
+            alert(
+            "Weak Password!"
+            );
+
+            return;
+        }
+
+        // SAVE ACCOUNT
+
+        localStorage.setItem(
+        'userName', name);
+
+        localStorage.setItem(
+        'userEmail', email);
+
+        localStorage.setItem(
+        'userPassword', password);
+
+        // SUCCESS MESSAGE
+
+        document.getElementById(
+        'registerMessage').innerHTML =
+        'Successfully Registered!';
+
+        // CLEAR INPUTS
+
+        document.getElementById(
+        'registerName').value = '';
+
+        document.getElementById(
+        'registerEmail').value = '';
+
+        document.getElementById(
+        'registerPassword').value = '';
+
+        // AUTO GO TO LOGIN
+
+        setTimeout(() => {
+
+            showLogin();
+
+            document.getElementById(
+            'loginMessage').innerHTML =
+            'You can now login!';
+
+        },1500);
+    }
+
+    // LOGIN
+
+    function login(){
+
+        let email =
+        document.getElementById(
+        'loginEmail').value;
+
+        let password =
+        document.getElementById(
+        'loginPassword').value;
+
+        let storedEmail =
+        localStorage.getItem(
+        'userEmail');
+
+        let storedPassword =
+        localStorage.getItem(
+        'userPassword');
+
+        if(email === storedEmail &&
+           password === storedPassword){
+
+            document.getElementById(
+            'loginMessage').innerHTML =
+            'Login Successful!';
+
+            setTimeout(() => {
+
+                window.location.href =
+                'home.html';
+
+            },1000);
+
+        }else{
+
+            document.getElementById(
+            'errorMessage').innerHTML =
+            'Invalid Email or Password';
+        }
+    }
+
+    // FORGOT PASSWORD
+
+    function forgotPassword(){
+
+        let storedPassword =
+        localStorage.getItem(
+        'userPassword');
+
+        if(storedPassword){
+
+            alert(
+            "Your password is: " +
+            storedPassword
+            );
+
+        }else{
+
+            alert(
+            "No account found!"
+            );
+        }
+    }
+
+</script>
+
+</body>
+</html>
