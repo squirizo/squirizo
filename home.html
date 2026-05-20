@@ -57,8 +57,10 @@
         <a href="aboutus.html">About</a>
 
         <a href="contactus.html">Contact</a>
-        
+
         <a href="reviews.html">Reviews</a>
+
+        <a href="dashboard.html">Dashboard</a>
 
     </nav>
 
@@ -286,99 +288,96 @@ onclick="openOrderForm()">
     </footer>
 
     <!-- JAVASCRIPT -->
+<script>
 
-   <script>
+let total = 0;
 
-        let total = 0;
+let orders = {
 
-        let orders = {
+    squirizo: 0,
+    spicy: 0
+};
 
-            squirizo:0,
-            spicy:0
-        };
+// ADD ITEM
 
-        // ADD ITEM
+function addItem(item, price){
 
-        function addItem(item, price){
+    orders[item]++;
 
-            orders[item]++;
+    total += price;
 
-            total += price;
+    updateOrders();
+}
 
-            updateOrders();
-        }
+// MINUS ITEM
 
-        // MINUS ITEM
+function minusItem(item, price){
 
-        function minusItem(item, price){
+    if(orders[item] > 0){
 
-            if(orders[item] > 0){
+        orders[item]--;
 
-                orders[item]--;
+        total -= price;
 
-                total -= price;
+        updateOrders();
+    }
+}
 
-                updateOrders();
-            }
-        }
+// UPDATE ORDERS
 
-        // UPDATE ORDERS
+function updateOrders(){
 
-        function updateOrders(){
+    const orderList =
+    document.getElementById("order-list");
 
-            const orderList =
-            document.getElementById('order-list');
+    orderList.innerHTML = "";
 
-            orderList.innerHTML = "";
+    // UPDATE COUNTS
 
-            // UPDATE COUNTS
+    document.getElementById(
+    "squirizo-count").innerHTML =
+    orders.squirizo;
 
-            document.getElementById(
-            "squirizo-count").innerHTML =
-            orders.squirizo;
+    document.getElementById(
+    "spicy-count").innerHTML =
+    orders.spicy;
 
-            document.getElementById(
-            "spicy-count").innerHTML =
-            orders.spicy;
+    // ORIGINAL
 
-            // ORIGINAL
+    if(orders.squirizo > 0){
 
-            if(orders.squirizo > 0){
+        const li =
+        document.createElement("li");
 
-                const li =
-                document.createElement('li');
+        li.innerHTML =
+        `SQUIRIZO x ${orders.squirizo}
+        = ₱${orders.squirizo * 50}`;
 
-                li.innerHTML =
-                `SQUIRIZO x ${orders.squirizo}
-                = ₱${orders.squirizo * 50}`;
+        orderList.appendChild(li);
+    }
 
-                orderList.appendChild(li);
-            }
+    // SPICY
 
-            // SPICY
+    if(orders.spicy > 0){
 
-            if(orders.spicy > 0){
+        const li =
+        document.createElement("li");
 
-                const li =
-                document.createElement('li');
+        li.innerHTML =
+        `SQUIRIZO SPICY x ${orders.spicy}
+        = ₱${orders.spicy * 55}`;
 
-                li.innerHTML =
-                `SQUIRIZO SPICY x ${orders.spicy}
-                = ₱${orders.spicy * 55}`;
+        orderList.appendChild(li);
+    }
 
-                orderList.appendChild(li);
-            }
+    // TOTAL
 
-            // TOTAL
+    document.getElementById("total")
+    .innerHTML =
+    `Total: ₱${total}`;
+}
 
-            document.getElementById('total')
-            .innerHTML =
-            `Total: ₱${total}`;
-        }
-
-        // BUY FUNCTION
-
-    // OPEN FORM
+// OPEN ORDER FORM
 
 function openOrderForm(){
 
@@ -393,7 +392,7 @@ function openOrderForm(){
     "orderModal").style.display = "flex";
 }
 
-// CLOSE FORM
+// CLOSE ORDER FORM
 
 function closeOrderForm(){
 
@@ -465,7 +464,7 @@ function submitOrder(){
 
             message:
 
-            `Order Details:
+`Order Details:
 
 ${ordersText}
 
@@ -477,11 +476,52 @@ ${address}
 
 Total:
 ₱${total}`
+
         }
 
     )
 
     .then(function(){
+
+        // DASHBOARD DATA
+
+        let totalOrders =
+        localStorage.getItem(
+        "totalOrders") || 0;
+
+        let totalSales =
+        localStorage.getItem(
+        "totalSales") || 0;
+
+        let totalCustomers =
+        localStorage.getItem(
+        "totalCustomers") || 0;
+
+        // ADD VALUES
+
+        totalOrders++;
+
+        totalSales =
+        parseInt(totalSales) + total;
+
+        totalCustomers++;
+
+        // SAVE DATA
+
+        localStorage.setItem(
+        "totalOrders",
+        totalOrders
+        );
+
+        localStorage.setItem(
+        "totalSales",
+        totalSales
+        );
+
+        localStorage.setItem(
+        "totalCustomers",
+        totalCustomers
+        );
 
         alert(
         "Order Successful ❤️"
@@ -490,6 +530,7 @@ Total:
         // RESET
 
         orders.squirizo = 0;
+
         orders.spicy = 0;
 
         total = 0;
@@ -511,6 +552,7 @@ Total:
         "paymentMethod").value = "";
 
         closeOrderForm();
+
     })
 
     .catch(function(error){
@@ -518,17 +560,21 @@ Total:
         alert("Email failed ❌");
 
         console.log(error);
+
     });
+
 }
 
-   function toggleMenu(){
+// MOBILE MENU
+
+function toggleMenu(){
 
     document.querySelector("nav")
     .classList.toggle("active");
 }
-    </script>
+
+</script>
 
   
-
 </body>
 </html>
