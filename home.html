@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>SQUIRIZO</title>
+
+    <link rel="stylesheet" href="css.css">
+
+    <!-- EMAILJS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <script>
+
+        (function(){
+
+            emailjs.init("2_Qj8j2PdJ3DTdvqj");
+
+        })();
+
+    </script>
+
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header>
+
+        <h1>SQUIRIZO</h1>
+
+    </header>
+
+    <!-- MENU ICON -->
+
+    <div class="menu-icon"
+    onclick="toggleMenu()">
+
+        ☰
+
+    </div>
+
+    <!-- NAVBAR -->
+
+    <nav>
+
+        <a href="#home">Home</a>
+
+        <a href="#menu">Menu</a>
+
+        <a href="aboutus.html">About</a>
+
+        <a href="contactus.html">Contact</a>
+
+    </nav>
+
+    <!-- HERO -->
+
+    <section class="hero" id="home">
+
+        <div>
+
+            <h1>SQUIRIZO</h1>
+
+            <p>
+                "Where tender squid and zesty chorizo blend together to give you an explosion of rich and amazing flavor in every bite!"
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- CONTAINER -->
+
+    <div class="container">
+
+        <h2 class="section-title" id="menu">
+
+            Our Menu
+
+        </h2>
+
+        <!-- MENU -->
+
+        <div class="menu">
+
+            <!-- ORIGINAL -->
+
+            <div class="card">
+
+                <img src="Gemini_Generated_Image_vqelthvqelthvqel (1).png">
+
+                <div class="card-content">
+
+                    <h3>SQUIRIZO</h3>
+
+                    <h6>(original)</h6>
+
+                    <p>
+                        Delicious squid and chorizo combination
+                    </p>
+
+                    <div class="price">
+
+                        ₱50
+
+                    </div>
+
+                    <!-- QUANTITY BUTTONS -->
+
+                    <div class="quantity-box">
+
+                        <button class="qty-btn"
+                        onclick="minusItem('squirizo',50)">
+                            -
+                        </button>
+
+                        <span class="qty-number"
+                        id="squirizo-count">
+                            0
+                        </span>
+
+                        <button class="qty-btn"
+                        onclick="addItem('squirizo',50)">
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- SPICY -->
+
+            <div class="card">
+
+                <img src="spicy squirizo.png">
+
+                <div class="card-content">
+
+                    <h3>SQUIRIZO SPICY</h3>
+
+                    <p>
+                        Spicy version with extra heat
+                    </p>
+
+                    <div class="price">
+
+                        ₱55
+
+                    </div>
+
+                    <!-- QUANTITY BUTTONS -->
+
+                    <div class="quantity-box">
+
+                        <button class="qty-btn"
+                        onclick="minusItem('spicy',55)">
+                            -
+                        </button>
+
+                        <span class="qty-number"
+                        id="spicy-count">
+                            0
+                        </span>
+
+                        <button class="qty-btn"
+                        onclick="addItem('spicy',55)">
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ORDER BOX -->
+
+        <div class="about" id="orders">
+
+            <h2 class="section-title">
+
+                Your Orders
+
+            </h2>
+
+            <ul id="order-list"></ul>
+
+            <div id="total">
+
+                Total: ₱0
+
+            </div>
+
+           <button class="buy-btn"
+onclick="openOrderForm()">
+
+    Buy Now
+
+</button>
+
+<!-- ORDER FORM -->
+
+
+        </div>
+
+    </div>
+
+    </div>
+
+<!-- ORDER FORM MODAL -->
+
+<div class="order-modal" id="orderModal">
+
+    <div class="order-form-box">
+
+        <span class="close-btn"
+        onclick="closeOrderForm()">
+            ✖
+        </span>
+
+        <h2>Checkout Order</h2>
+
+        <input type="text"
+        id="customerName"
+        placeholder="Enter Your Name">
+
+        <input type="email"
+        id="customerEmail"
+        placeholder="Enter Your Gmail">
+
+        <textarea
+        id="customerAddress"
+        placeholder="Enter Delivery Address"></textarea>
+
+        <select id="paymentMethod">
+
+            <option value="">
+                Select Payment Method
+            </option>
+
+            <option value="GCash">
+                GCash
+            </option>
+
+            <option value="Cash on Delivery">
+                Cash on Delivery
+            </option>
+
+        </select>
+
+        <button class="submit-order-btn"
+        onclick="submitOrder()">
+
+            Confirm Order
+
+        </button>
+
+    </div>
+
+</div>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+
+            © 2026 SQUIRIZO | All Rights Reserved
+
+        </p>
+
+    </footer>
+
+    <!-- JAVASCRIPT -->
+
+   <script>
+
+        let total = 0;
+
+        let orders = {
+
+            squirizo:0,
+            spicy:0
+        };
+
+        // ADD ITEM
+
+        function addItem(item, price){
+
+            orders[item]++;
+
+            total += price;
+
+            updateOrders();
+        }
+
+        // MINUS ITEM
+
+        function minusItem(item, price){
+
+            if(orders[item] > 0){
+
+                orders[item]--;
+
+                total -= price;
+
+                updateOrders();
+            }
+        }
+
+        // UPDATE ORDERS
+
+        function updateOrders(){
+
+            const orderList =
+            document.getElementById('order-list');
+
+            orderList.innerHTML = "";
+
+            // UPDATE COUNTS
+
+            document.getElementById(
+            "squirizo-count").innerHTML =
+            orders.squirizo;
+
+            document.getElementById(
+            "spicy-count").innerHTML =
+            orders.spicy;
+
+            // ORIGINAL
+
+            if(orders.squirizo > 0){
+
+                const li =
+                document.createElement('li');
+
+                li.innerHTML =
+                `SQUIRIZO x ${orders.squirizo}
+                = ₱${orders.squirizo * 50}`;
+
+                orderList.appendChild(li);
+            }
+
+            // SPICY
+
+            if(orders.spicy > 0){
+
+                const li =
+                document.createElement('li');
+
+                li.innerHTML =
+                `SQUIRIZO SPICY x ${orders.spicy}
+                = ₱${orders.spicy * 55}`;
+
+                orderList.appendChild(li);
+            }
+
+            // TOTAL
+
+            document.getElementById('total')
+            .innerHTML =
+            `Total: ₱${total}`;
+        }
+
+        // BUY FUNCTION
+
+    // OPEN FORM
+
+function openOrderForm(){
+
+    if(total === 0){
+
+        alert("Please order first!");
+
+        return;
+    }
+
+    document.getElementById(
+    "orderModal").style.display = "flex";
+}
+
+// CLOSE FORM
+
+function closeOrderForm(){
+
+    document.getElementById(
+    "orderModal").style.display = "none";
+}
+
+// SUBMIT ORDER
+
+function submitOrder(){
+
+    let customerName =
+    document.getElementById(
+    "customerName").value;
+
+    let customerEmail =
+    document.getElementById(
+    "customerEmail").value;
+
+    let address =
+    document.getElementById(
+    "customerAddress").value;
+
+    let paymentMethod =
+    document.getElementById(
+    "paymentMethod").value;
+
+    // VALIDATION
+
+    if(customerName === "" ||
+       customerEmail === "" ||
+       address === "" ||
+       paymentMethod === ""){
+
+        alert("Please fill up all fields!");
+
+        return;
+    }
+
+    // ORDER TEXT
+
+    let ordersText = "";
+
+    if(orders.squirizo > 0){
+
+        ordersText +=
+        `SQUIRIZO x ${orders.squirizo}\n`;
+    }
+
+    if(orders.spicy > 0){
+
+        ordersText +=
+        `SQUIRIZO SPICY x ${orders.spicy}\n`;
+    }
+
+    // SEND EMAIL
+
+    emailjs.send(
+
+        "service_anemsfa",
+
+        "template_eicxyd8",
+
+        {
+
+            name: customerName,
+
+            email: customerEmail,
+
+            message:
+
+            `Order Details:
+
+${ordersText}
+
+Payment Method:
+${paymentMethod}
+
+Address:
+${address}
+
+Total:
+₱${total}`
+        }
+
+    )
+
+    .then(function(){
+
+        alert(
+        "Order Successful ❤️"
+        );
+
+        // RESET
+
+        orders.squirizo = 0;
+        orders.spicy = 0;
+
+        total = 0;
+
+        updateOrders();
+
+        // CLEAR FORM
+
+        document.getElementById(
+        "customerName").value = "";
+
+        document.getElementById(
+        "customerEmail").value = "";
+
+        document.getElementById(
+        "customerAddress").value = "";
+
+        document.getElementById(
+        "paymentMethod").value = "";
+
+        closeOrderForm();
+    })
+
+    .catch(function(error){
+
+        alert("Email failed ❌");
+
+        console.log(error);
+    });
+}
+
+    </script>
+
+</body>
+</html>
