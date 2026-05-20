@@ -855,3 +855,18 @@ html{
     color:gold;
 }
 
+.star-rating{
+    text-align:center;
+    margin-bottom:15px;
+}
+
+.star-rating span{
+    font-size:35px;
+    cursor:pointer;
+    opacity:0.4;
+    transition:0.3s;
+}
+
+.star-rating span.active{
+    opacity:1;
+}
