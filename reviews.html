@@ -177,33 +177,23 @@ header{
     id="reviewName"
     placeholder="Enter Your Name">
 
-    <select id="reviewRating">
+   <!-- STAR RATING -->
 
-        <option value="">
-            Select Rating
-        </option>
+<div class="star-rating">
 
-        <option value="⭐">
-            ⭐
-        </option>
+    <span onclick="setRating('⭐')">★</span>
 
-        <option value="⭐⭐">
-            ⭐⭐
-        </option>
+    <span onclick="setRating('⭐⭐')">★</span>
 
-        <option value="⭐⭐⭐">
-            ⭐⭐⭐
-        </option>
+    <span onclick="setRating('⭐⭐⭐')">★</span>
 
-        <option value="⭐⭐⭐⭐">
-            ⭐⭐⭐⭐
-        </option>
+    <span onclick="setRating('⭐⭐⭐⭐')">★</span>
 
-        <option value="⭐⭐⭐⭐⭐">
-            ⭐⭐⭐⭐⭐
-        </option>
+    <span onclick="setRating('⭐⭐⭐⭐⭐')">★</span>
 
-    </select>
+</div>
+
+<input type="hidden" id="reviewRating">
 
     <textarea
     id="reviewText"
@@ -334,6 +324,31 @@ function displayReviews(){
         </div>
 
         `;
+    });
+}
+
+// STAR RATING
+
+function setRating(rating){
+
+    document.getElementById(
+    "reviewRating").value = rating;
+
+    let stars =
+    document.querySelectorAll(
+    ".star-rating span"
+    );
+
+    stars.forEach((star,index)=>{
+
+        if(index < rating.length){
+
+            star.classList.add("active");
+
+        }else{
+
+            star.classList.remove("active");
+        }
     });
 }
 
