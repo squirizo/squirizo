@@ -870,3 +870,99 @@ html{
 .star-rating span.active{
     opacity:1;
 }
+
+
+/* REVIEWS LIST */
+
+.reviews-list{
+
+    width:90%;
+    max-width:800px;
+
+    margin:40px auto;
+}
+
+/* SINGLE REVIEW */
+
+.review-item{
+
+    display:flex;
+
+    gap:15px;
+
+    margin-bottom:25px;
+
+    padding-bottom:20px;
+
+    border-bottom:1px solid #ddd;
+}
+
+/* PROFILE */
+
+.review-profile{
+
+    width:50px;
+
+    height:50px;
+
+    border-radius:50%;
+
+    background:#7b4b32;
+
+    color:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    flex-shrink:0;
+}
+
+/* REVIEW CONTENT */
+
+.review-content{
+
+    width:100%;
+}
+
+.review-top{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:5px;
+}
+
+.review-name{
+
+    font-weight:bold;
+
+    font-size:18px;
+
+    color:#222;
+}
+
+.review-stars{
+
+    color:gold;
+
+    font-size:18px;
+}
+
+.review-text{
+
+    color:#444;
+
+    line-height:1.5;
+
+    margin-top:8px;
+}
