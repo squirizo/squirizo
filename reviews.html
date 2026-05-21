@@ -210,7 +210,7 @@ header{
 
 <!-- REVIEWS DISPLAY -->
 
-<div class="reviews-container"
+<div class="reviews-list"
 id="reviewsContainer">
 
 </div>
@@ -309,24 +309,42 @@ function displayReviews(){
 
     reviews.reverse().forEach(function(review){
 
+        let firstLetter =
+        review.name.charAt(0).toUpperCase();
+
         container.innerHTML += `
 
-        <div class="review-card">
+        <div class="review-item">
 
-            <h3>${review.name}</h3>
-
-            <div class="stars">
-                ${review.rating}
+            <div class="review-profile">
+                ${firstLetter}
             </div>
 
-            <p>${review.text}</p>
+            <div class="review-content">
+
+                <div class="review-top">
+
+                    <div class="review-name">
+                        ${review.name}
+                    </div>
+
+                    <div class="review-stars">
+                        ${review.rating}
+                    </div>
+
+                </div>
+
+                <div class="review-text">
+                    ${review.text}
+                </div>
+
+            </div>
 
         </div>
 
         `;
     });
 }
-
 // STAR RATING
 
 function setRating(rating){
