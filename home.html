@@ -247,21 +247,33 @@ onclick="openOrderForm()">
         id="customerAddress"
         placeholder="Enter Delivery Address"></textarea>
 
-        <select id="paymentMethod">
+      <select id="paymentMethod"
+onchange="showGcashField()">
 
-            <option value="">
-                Select Payment Method
-            </option>
+    <option value="">
+        Select Payment Method
+    </option>
 
-            <option value="GCash">
-                GCash
-            </option>
+    <option value="GCash">
+        GCash
+    </option>
 
-            <option value="Cash on Delivery">
-                Cash on Delivery
-            </option>
+    <option value="Cash on Delivery">
+        Cash on Delivery
+    </option>
 
-        </select>
+</select>
+
+<!-- GCASH NUMBER -->
+
+<div id="gcashField"
+style="display:none;">
+
+    <input type="text"
+    id="gcashNumber"
+    placeholder="Enter GCash Number">
+
+</div>
 
         <button class="submit-order-btn"
         onclick="submitOrder()">
@@ -420,17 +432,33 @@ function submitOrder(){
     document.getElementById(
     "paymentMethod").value;
 
+    let gcashNumber =
+document.getElementById(
+"gcashNumber").value;
+
     // VALIDATION
 
-    if(customerName === "" ||
-       customerEmail === "" ||
-       address === "" ||
-       paymentMethod === ""){
+   if(customerName === "" ||
+   customerEmail === "" ||
+   address === "" ||
+   paymentMethod === ""){
 
-        alert("Please fill up all fields!");
+    alert("Please fill up all fields!");
 
-        return;
-    }
+    return;
+}
+
+// GCASH VALIDATION
+
+if(paymentMethod === "GCash" &&
+   gcashNumber === ""){
+
+    alert("Please enter GCash number!");
+
+    return;
+}
+
+
 
     // ORDER TEXT
 
@@ -573,6 +601,27 @@ function toggleMenu(){
     .classList.toggle("active");
 }
 
+function showGcashField(){
+
+    let payment =
+    document.getElementById(
+    "paymentMethod").value;
+
+    let gcashField =
+    document.getElementById(
+    "gcashField");
+
+    if(payment === "GCash"){
+
+        gcashField.style.display =
+        "block";
+
+    }else{
+
+        gcashField.style.display =
+        "none";
+    }
+}
 </script>
 
   
