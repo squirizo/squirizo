@@ -484,13 +484,19 @@ if(paymentMethod === "GCash" &&
 
         "template_eicxyd8",
 
-        {
+        
+{
+    title: "New Customer Order",
 
-            name: customerName,
+    name: customerName,
 
-            email: customerEmail,
+    email: customerEmail,
 
-            message:
+    address: address,
+
+    payment: paymentMethod,
+
+    message:
 
 `Order Details:
 
@@ -499,17 +505,65 @@ ${ordersText}
 Payment Method:
 ${paymentMethod}
 
+GCash Number:
+${gcashNumber}
+
+Send Payment To:
+09761350558
+Mc JohnRay Montejo Ortiz
+
+Address:
+${address}
+
+Total:
+₱${total}`
+        }
+
+    )
+
+    .then(function(){
+
+                // SEND EMAIL TO SQUIRIZO OWNER
+
+        emailjs.send(
+
+            "service_anemsfa",
+
+            "template_34zomko",
+
+            {
+
+                title: "New Customer Order",
+
+                name: customerName,
+
+                email: customerEmail,
+
+                address: address,
+
+                payment: paymentMethod,
+
+                message:
+
+`Order Details:
+
+${ordersText}
+
+Payment Method:
+${paymentMethod}
+
+GCash Number:
+${gcashNumber}
+
 Address:
 ${address}
 
 Total:
 ₱${total}`
 
-        }
+            }
 
-    )
-
-    .then(function(){
+        );
 
         // DASHBOARD DATA
 
@@ -555,6 +609,13 @@ Total:
         "Order Successful ❤️"
         );
 
+        if(paymentMethod === "GCash"){
+
+    alert(
+    "Please send your payment to:\n\n09761350558\nMc JohnRay Montejo Ortiz"
+    );
+}
+
         // RESET
 
         orders.squirizo = 0;
@@ -588,7 +649,7 @@ Total:
         alert("Email failed ❌");
 
         console.log(error);
-
+alert(JSON.stringify(error));
     });
 
 }
