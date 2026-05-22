@@ -1,106 +1,686 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
     <title>SQUIRIZO Dashboard</title>
 
     <link rel="stylesheet" href="css.css">
 
+    <!-- ICONS -->
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
 
-        body{
-            background: #f5f5f5;
-            font-family: Arial;
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
         }
 
+        body{
+
+            background:
+            linear-gradient(
+            135deg,
+            #fff6ef,
+            #fbe4d5
+            );
+
+            min-height:100vh;
+        }
+
+        /* BACK BUTTON */
+
+        .back-btn{
+
+            display:inline-flex;
+
+            align-items:center;
+
+            gap:10px;
+
+            margin:25px;
+
+            padding:14px 25px;
+
+            background:linear-gradient(
+            45deg,
+            #ff6600,
+            #ff944d
+            );
+
+            color:white;
+
+            text-decoration:none;
+
+            border-radius:50px;
+
+            font-weight:bold;
+
+            box-shadow:0 6px 15px rgba(0,0,0,0.15);
+
+            transition:0.3s;
+        }
+
+        .back-btn:hover{
+
+            transform:translateX(-5px);
+
+            box-shadow:0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* DASHBOARD */
+
         .dashboard-container{
-            width: 90%;
-            margin: 40px auto;
+
+            width:90%;
+
+            margin:auto;
+
+            padding-bottom:50px;
         }
 
         .dashboard-title{
-            text-align: center;
-            font-size: 45px;
-            color: #7a3e1d;
-            margin-bottom: 40px;
+
+            text-align:center;
+
+            font-size:55px;
+
+            color:#7a3e1d;
+
+            margin-bottom:10px;
+
+            letter-spacing:3px;
+
+            animation:fadeDown 1s ease;
         }
+
+        .dashboard-subtitle{
+
+            text-align:center;
+
+            color:#555;
+
+            margin-bottom:50px;
+
+            font-size:18px;
+
+            animation:fadeIn 2s ease;
+        }
+
+        /* DASHBOARD BOX */
 
         .dashboard-box{
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
+
+            display:grid;
+
+            grid-template-columns:
+            repeat(auto-fit, minmax(250px,1fr));
+
+            gap:25px;
         }
+
+        /* CARD */
 
         .card{
-            background: white;
-            width: 250px;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+
+            position:relative;
+
+            background:white;
+
+            padding:35px 25px;
+
+            border-radius:25px;
+
+            overflow:hidden;
+
+            text-align:center;
+
+            box-shadow:0 10px 25px rgba(0,0,0,0.1);
+
+            transition:0.4s ease;
+
+            animation:cardFade 0.8s ease;
         }
+
+        .card:hover{
+
+            transform:translateY(-10px) scale(1.03);
+
+            box-shadow:0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        /* ICON */
+
+        .card i{
+
+            font-size:45px;
+
+            margin-bottom:15px;
+
+            color:#ff6600;
+
+            background:#fff1e6;
+
+            width:90px;
+
+            height:90px;
+
+            line-height:90px;
+
+            border-radius:50%;
+
+            box-shadow:0 5px 15px rgba(255,102,0,0.2);
+        }
+
+        /* NUMBER */
 
         .card h2{
-            font-size: 40px;
-            color: orangered;
+
+            font-size:42px;
+
+            color:#7a3e1d;
+
+            margin-bottom:10px;
         }
+
+        /* TEXT */
 
         .card p{
-            font-size: 20px;
+
+            font-size:20px;
+
+            color:#666;
         }
 
-        .back-btn{
-            display: inline-block;
-            margin: 20px;
-            padding: 12px 20px;
-            background: orangered;
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: bold;
+        /* TOP GLOW */
+
+        .card::before{
+
+            content:"";
+
+            position:absolute;
+
+            top:0;
+
+            left:0;
+
+            width:100%;
+
+            height:8px;
+
+            background:linear-gradient(
+            90deg,
+            #ff6600,
+            #ff944d
+            );
+        }
+
+        /* MINI BAR */
+
+        .mini-chart{
+
+            width:100%;
+
+            height:8px;
+
+            background:#f1f1f1;
+
+            border-radius:20px;
+
+            margin-top:20px;
+
+            overflow:hidden;
+        }
+
+        .mini-chart span{
+
+            display:block;
+
+            height:100%;
+
+            border-radius:20px;
+
+            background:linear-gradient(
+            90deg,
+            #ff6600,
+            #ff944d
+            );
+        }
+
+        /* BUSINESS INSIGHTS */
+
+        .activity-box{
+
+            margin-top:50px;
+
+            background:white;
+
+            padding:30px;
+
+            border-radius:25px;
+
+            box-shadow:0 10px 25px rgba(0,0,0,0.1);
+
+            animation:fadeIn 1.5s ease;
+        }
+
+        .activity-box h3{
+
+            color:#7a3e1d;
+
+            margin-bottom:20px;
+
+            font-size:28px;
+        }
+
+        .activity{
+
+            display:flex;
+
+            justify-content:space-between;
+
+            align-items:center;
+
+            padding:18px 0;
+
+            border-bottom:1px solid #eee;
+        }
+
+        .activity:last-child{
+
+            border-bottom:none;
+        }
+
+        .activity p{
+
+            color:#444;
+
+            font-size:17px;
+        }
+
+        .activity span{
+
+            color:#ff6600;
+
+            font-weight:bold;
+
+            font-size:17px;
+        }
+
+        /* ANIMATION */
+
+        @keyframes fadeDown{
+
+            from{
+
+                opacity:0;
+
+                transform:translateY(-40px);
+            }
+
+            to{
+
+                opacity:1;
+
+                transform:translateY(0);
+            }
+        }
+
+        @keyframes fadeIn{
+
+            from{
+
+                opacity:0;
+            }
+
+            to{
+
+                opacity:1;
+            }
+        }
+
+        @keyframes cardFade{
+
+            from{
+
+                opacity:0;
+
+                transform:translateY(40px);
+            }
+
+            to{
+
+                opacity:1;
+
+                transform:translateY(0);
+            }
+        }
+
+        /* MOBILE */
+
+        @media(max-width:768px){
+
+            .dashboard-title{
+
+                font-size:38px;
+            }
+
+            .dashboard-subtitle{
+
+                font-size:15px;
+            }
+
+            .card{
+
+                padding:25px;
+            }
+
+            .card h2{
+
+                font-size:35px;
+            }
+
+            .card p{
+
+                font-size:18px;
+            }
+
+            .activity{
+
+                flex-direction:column;
+
+                align-items:flex-start;
+
+                gap:8px;
+            }
         }
 
     </style>
+
 </head>
+
 <body>
 
-    <a href="home.html" class="back-btn">
+    <!-- BACK BUTTON -->
+
+    <a href="home.html"
+    class="back-btn">
+
         ← Back to Home
+
     </a>
+
+    <!-- DASHBOARD -->
 
     <div class="dashboard-container">
 
         <h1 class="dashboard-title">
+
             SQUIRIZO Dashboard
+
         </h1>
+
+        <p class="dashboard-subtitle">
+
+            Monitor your orders, sales, customers, and business performance.
+
+        </p>
+
+        <!-- DASHBOARD CARDS -->
 
         <div class="dashboard-box">
 
+            <!-- ORDERS -->
+
             <div class="card">
-                <h2>120</h2>
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <h2 id="ordersCount">0</h2>
+
                 <p>Total Orders</p>
+
+                <div class="mini-chart">
+
+                    <span id="ordersBar"
+                    style="width:0%;"></span>
+
+                </div>
+
             </div>
 
+            <!-- SALES -->
+
             <div class="card">
-                <h2>₱5,500</h2>
+
+                <i class="fa-solid fa-money-bill-wave"></i>
+
+                <h2 id="salesCount">₱0</h2>
+
                 <p>Total Sales</p>
+
+                <div class="mini-chart">
+
+                    <span id="salesBar"
+                    style="width:0%;"></span>
+
+                </div>
+
             </div>
 
-            <div class="card">
-                <h2>58</h2>
-                <p>Customers</p>
-            </div>
+            <!-- CUSTOMERS -->
 
             <div class="card">
-                <h2>4.9★</h2>
-                <p>Ratings</p>
+
+                <i class="fa-solid fa-users"></i>
+
+                <h2 id="customersCount">0</h2>
+
+                <p>Total Customers</p>
+
+                <div class="mini-chart">
+
+                    <span id="customersBar"
+                    style="width:0%;"></span>
+
+                </div>
+
+            </div>
+
+            <!-- RATINGS -->
+
+            <div class="card">
+
+                <i class="fa-solid fa-star"></i>
+
+                <h2 id="ratingCount">4.9★</h2>
+
+                <p>Customer Rating</p>
+
+                <div class="mini-chart">
+
+                    <span style="width:98%;"></span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- BUSINESS INSIGHTS -->
+
+        <div class="activity-box">
+
+            <h3>
+
+                SQUIRIZO Highlights
+
+            </h3>
+
+            <div class="activity">
+
+                <p>
+                    Total Orders Received
+                </p>
+
+                <span id="highlightOrders">
+                    1,028 Orders
+                </span>
+
+            </div>
+
+            <div class="activity">
+
+                <p>
+                    Total Revenue Earned
+                </p>
+
+                <span id="highlightSales">
+                    ₱51,400
+                </span>
+
+            </div>
+
+            <div class="activity">
+
+                <p>
+                    Registered Customers
+                </p>
+
+                <span id="highlightCustomers">
+                    956 Customers
+                </span>
+
+            </div>
+
+            <div class="activity">
+
+                <p>
+                    Customer Satisfaction
+                </p>
+
+                <span>
+                    98%
+                </span>
+
             </div>
 
         </div>
 
     </div>
+
+    <!-- REALTIME DATA -->
+
+    <script>
+
+        // GET DATA FROM LOCAL STORAGE
+
+      
+
+localStorage.setItem("totalOrders", 1028);
+localStorage.setItem("totalSales", 51400);
+localStorage.setItem("totalCustomers", 956);
+
+// GET DATA FROM LOCAL STORAGE
+
+let totalOrders =
+parseInt(localStorage.getItem("totalOrders")) || 0;
+
+let totalSales =
+parseInt(localStorage.getItem("totalSales")) || 0;
+
+let totalCustomers =
+parseInt(localStorage.getItem("totalCustomers")) || 0;
+
+// DISPLAY MAIN CARDS
+
+document.getElementById(
+"ordersCount").innerHTML =
+totalOrders;
+
+document.getElementById(
+"salesCount").innerHTML =
+"₱" + totalSales;
+
+document.getElementById(
+"customersCount").innerHTML =
+totalCustomers;
+
+document.getElementById(
+"highlightOrders").innerHTML =
+totalOrders + " Orders";
+
+document.getElementById(
+"highlightSales").innerHTML =
+"₱" + totalSales;
+
+document.getElementById(
+"highlightCustomers").innerHTML =
+totalCustomers + " Customers";
+
+
+
+        // DISPLAY MAIN CARDS
+
+        document.getElementById(
+        "ordersCount").innerHTML =
+        totalOrders;
+
+        document.getElementById(
+        "salesCount").innerHTML =
+        "₱" + totalSales;
+
+        document.getElementById(
+        "customersCount").innerHTML =
+        totalCustomers;
+
+        // DISPLAY HIGHLIGHTS
+
+        document.getElementById(
+        "highlightOrders").innerHTML =
+        totalOrders + " Orders";
+
+        document.getElementById(
+        "highlightSales").innerHTML =
+        "₱" + totalSales;
+
+        document.getElementById(
+        "highlightCustomers").innerHTML =
+        totalCustomers + " Customers";
+
+        // MINI CHART ANIMATION
+
+        let ordersPercent =
+        Math.min(totalOrders * 10, 100);
+
+        let salesPercent =
+        Math.min(totalSales / 100, 100);
+
+        let customersPercent =
+        Math.min(totalCustomers * 10, 100);
+
+        document.getElementById(
+        "ordersBar").style.width =
+        ordersPercent + "%";
+
+        document.getElementById(
+        "salesBar").style.width =
+        salesPercent + "%";
+
+        document.getElementById(
+        "customersBar").style.width =
+        customersPercent + "%";
+
+    </script>
 
 </body>
 </html>
