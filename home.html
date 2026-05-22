@@ -51,16 +51,11 @@
     <nav>
 
         <a href="#home">Home</a>
-
         <a href="#menu">Menu</a>
-
-        <a href="aboutus.html">About</a>
-
-        <a href="contactus.html">Contact</a>
-
-        <a href="reviews.html">Reviews</a>
-
         <a href="dashboard.html">Dashboard</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="aboutus.html">About</a>
+        <a href="contactus.html">Contact</a>
 
     </nav>
 
@@ -433,32 +428,30 @@ function submitOrder(){
     "paymentMethod").value;
 
     let gcashNumber =
-document.getElementById(
-"gcashNumber").value;
+    document.getElementById(
+    "gcashNumber").value;
 
     // VALIDATION
 
-   if(customerName === "" ||
-   customerEmail === "" ||
-   address === "" ||
-   paymentMethod === ""){
+    if(customerName === "" ||
+    customerEmail === "" ||
+    address === "" ||
+    paymentMethod === ""){
 
-    alert("Please fill up all fields!");
+        alert("Please fill up all fields!");
 
-    return;
-}
+        return;
+    }
 
-// GCASH VALIDATION
+    // GCASH VALIDATION
 
-if(paymentMethod === "GCash" &&
-   gcashNumber === ""){
+    if(paymentMethod === "GCash" &&
+    gcashNumber === ""){
 
-    alert("Please enter GCash number!");
+        alert("Please enter GCash number!");
 
-    return;
-}
-
-
+        return;
+    }
 
     // ORDER TEXT
 
@@ -484,19 +477,19 @@ if(paymentMethod === "GCash" &&
 
         "template_eicxyd8",
 
-        
-{
-    title: "New Customer Order",
+        {
 
-    name: customerName,
+            title: "New Customer Order",
 
-    email: customerEmail,
+            name: customerName,
 
-    address: address,
+            email: customerEmail,
 
-    payment: paymentMethod,
+            address: address,
 
-    message:
+            payment: paymentMethod,
+
+            message:
 
 `Order Details:
 
@@ -517,13 +510,14 @@ ${address}
 
 Total:
 ₱${total}`
+
         }
 
     )
 
     .then(function(){
 
-                // SEND EMAIL TO SQUIRIZO OWNER
+        // OWNER EMAIL
 
         emailjs.send(
 
@@ -565,30 +559,43 @@ Total:
 
         );
 
-        // DASHBOARD DATA
+        // =========================
+        // DASHBOARD REALTIME DATA
+        // =========================
 
         let totalOrders =
-        localStorage.getItem(
-        "totalOrders") || 0;
+        parseInt(localStorage.getItem(
+        "totalOrders")) || 1028;
 
         let totalSales =
-        localStorage.getItem(
-        "totalSales") || 0;
+        parseInt(localStorage.getItem(
+        "totalSales")) || 51400;
 
         let totalCustomers =
-        localStorage.getItem(
-        "totalCustomers") || 0;
+        parseInt(localStorage.getItem(
+        "totalCustomers")) || 956;
 
-        // ADD VALUES
+        let squirizoSold =
+        parseInt(localStorage.getItem(
+        "squirizoSold")) || 520;
+
+        let spicySold =
+        parseInt(localStorage.getItem(
+        "spicySold")) || 680;
+
+        // UPDATE VALUES
 
         totalOrders++;
 
-        totalSales =
-        parseInt(totalSales) + total;
+        totalSales += total;
 
         totalCustomers++;
 
-        // SAVE DATA
+        squirizoSold += orders.squirizo;
+
+        spicySold += orders.spicy;
+
+        // SAVE VALUES
 
         localStorage.setItem(
         "totalOrders",
@@ -605,16 +612,28 @@ Total:
         totalCustomers
         );
 
+        localStorage.setItem(
+        "squirizoSold",
+        squirizoSold
+        );
+
+        localStorage.setItem(
+        "spicySold",
+        spicySold
+        );
+
+        // SUCCESS
+
         alert(
         "Order Successful ❤️"
         );
 
         if(paymentMethod === "GCash"){
 
-    alert(
-    "Please send your payment to:\n\n09761350558\nMc JohnRay Montejo Ortiz"
-    );
-}
+            alert(
+            "Please send your payment to:\n\n09761350558\nMc JohnRay Montejo Ortiz"
+            );
+        }
 
         // RESET
 
@@ -640,6 +659,9 @@ Total:
         document.getElementById(
         "paymentMethod").value = "";
 
+        document.getElementById(
+        "gcashNumber").value = "";
+
         closeOrderForm();
 
     })
@@ -649,7 +671,7 @@ Total:
         alert("Email failed ❌");
 
         console.log(error);
-alert(JSON.stringify(error));
+
     });
 
 }
@@ -661,6 +683,8 @@ function toggleMenu(){
     document.querySelector("nav")
     .classList.toggle("active");
 }
+
+// GCASH FIELD
 
 function showGcashField(){
 
@@ -683,6 +707,7 @@ function showGcashField(){
         "none";
     }
 }
+
 </script>
 
   
