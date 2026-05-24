@@ -734,19 +734,25 @@ function payAndSubmit(){
     document.getElementById(
     "paymentMethod").value;
 
+    // IF GCASH
+
     if(paymentMethod === "GCash"){
 
         const isMobile =
         /Android|iPhone|iPad|iPod/i
         .test(navigator.userAgent);
 
+        // MOBILE
+
         if(isMobile){
 
             // OPEN GCASH APP
 
-            window.location.href = "gcash://";
+            window.location.href =
+            "https://www.gcash.com";
 
-            // SEND ORDER AFTER
+            // OPTIONAL:
+            // SEND ORDER AFTER 3 SECONDS
 
             setTimeout(() => {
 
@@ -756,14 +762,22 @@ function payAndSubmit(){
 
         }else{
 
+            // DESKTOP
+
             alert(
-            "Please open on mobile phone to use GCash"
+            "Open this on mobile to launch GCash App"
             );
 
             submitOrder();
         }
 
-    }}
+    }else{
+
+        // CASH ON DELIVERY
+
+        submitOrder();
+    }
+}
 </script>
 
   
