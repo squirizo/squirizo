@@ -916,3 +916,54 @@ MOBILE RESPONSIVE
 
     object-fit:cover;
 }
+
+
+.qr-box{
+
+    display:none;
+
+    text-align:center;
+
+    margin-top:15px;
+}
+
+.gcash-btn{
+
+    background:#007dfe;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 20px;
+
+    border-radius:10px;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+    margin-top:10px;
+}
+
+/* DESKTOP */
+
+.mobile-only{
+
+    display:none;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .desktop-only{
+
+        display:none;
+    }
+
+    .mobile-only{
+
+        display:inline-block;
+    }
+}
