@@ -662,20 +662,21 @@ paymentScreenshot
             // GCASH PAYMENT
             // =========================
 
-            if(paymentMethod === "GCash"){
+          if(paymentMethod === "GCash"){
 
-                const isMobile =
-                /Android|iPhone|iPad|iPod/i
-                .test(navigator.userAgent);
+    const isMobile =
+    /Android|iPhone|iPad|iPod/i
+    .test(navigator.userAgent);
 
-                // MOBILE
+    if(isMobile){
 
-                if(isMobile){
+        // OPEN GCASH APP
 
-                    window.location.href =
-                    "gcash://send-money/639761350558";
-                }
-            }
+        window.location.href =
+        "gcash://";
+
+    }
+}
 
             // =========================
             // RESET
@@ -736,11 +737,7 @@ function toggleMenu(){
 
 function openGcash(){
 
-    if(isMobile){
 
-   window.location.href =
-"https://link.gcash.com/send?mobile=639761350558";
-}
 }
 
 </script>
