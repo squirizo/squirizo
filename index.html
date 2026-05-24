@@ -724,10 +724,10 @@ function toggleMenu(){
     .classList.toggle("active");
 }
 
-
 // =========================
 // PAY + SUBMIT ORDER
 // =========================
+
 function payAndSubmit(){
 
     let paymentMethod =
@@ -749,17 +749,24 @@ function payAndSubmit(){
             // OPEN GCASH APP
 
             window.location.href =
-            "gcash://send";
+            "https://link.gcash.com";
 
-            setTimeout(async () => {
+            // OPTIONAL:
+            // SEND ORDER AFTER 3 SECONDS
 
-                await submitOrder();
+            setTimeout(() => {
+
+                submitOrder();
 
             }, 3000);
 
         }else{
 
             // DESKTOP
+
+            alert(
+            "Open this on mobile to launch GCash App"
+            );
 
             submitOrder();
         }
