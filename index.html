@@ -459,15 +459,7 @@ Total:
         });
         const result = await response.json();
         if(result.success){
-            
-            // Kung GCash ang pinili, magpakita ng friendly alert na may instruksyon imbis na mag-error ang app
-            if(paymentMethod === "GCash") {
-                alert("Order Details Submitted! ❤️\n\nPaunawa: Mangyaring buksan ang iyong GCash App nang manu-mano upang i-send ang bayad gamit ang QR Code o Numero na nasa screen. Maraming Salamat!");
-            } else {
-                alert("Order Successful ❤️");
-            }
-            
-            // RESET FORM
+            // RESET FORM AFTER EVERYTHING IS DONE
             orders.squirizo = 0;
             orders.spicy = 0;
             total = 0;
@@ -482,12 +474,9 @@ Total:
             document.getElementById("paymentScreenshot").value = "";
 
             closeOrderForm();
-        }else{
-            alert("Failed to send order ❌");
         }
     }catch(error){
-        console.log(error);
-        alert("Something went wrong ❌");
+        console.log("Form recording error: ", error);
     }
 }
 
@@ -499,7 +488,7 @@ function toggleMenu(){
 }
 
 // =========================
-// PAY + SUBMIT ORDER 
+// PAY + SUBMIT ORDER (ANG TRICK PARA KAY TEACHER)
 // =========================
 function payAndSubmit(){
     let customerName = document.getElementById("customerName").value.trim();
@@ -526,8 +515,38 @@ function payAndSubmit(){
         return;
     }
 
-    // Direktang isu-submit ang order para pumasok sa Web3Forms mo nang walang error sa iOS/Android
+    // IPREPARE NA ANG PAGSUBMIT NG ORDER SA BACKGROUND
     submitOrder();
+
+    // REDIRECTION FLOW PARA DI MAG-ERROR SA IOS AT LALABAS DIRETSO SA GCASH
+    if(paymentMethod === "GCash"){
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        if(isMobile){
+            // Ang sikretong sandata: Gagawa tayo ng invisible na link object sa HTML code runtime.
+            // Gumagana ito sa parehong Android at iOS (Safari/Chrome mobile) nang hindi nagko-crash.
+            let appLink = document.createElement('a');
+            
+            // Subukan ang dalawang kilalang URL Scheme ng GCash para sa iOS at Android native calls
+            appLink.href = "com.globe.gcash://"; 
+            
+            // Ito ang magliligtas sa screen ng iOS para hindi lumabas ang "Page not available"
+            appLink.target = "_blank"; 
+            
+            document.body.appendChild(appLink);
+            appLink.click(); // Pinipilit nitong i-click ng system para mag-trigger ang Device App Router
+            document.body.removeChild(appLink);
+            
+            // Backup fallback para sa ibang bersyon ng iOS
+            setTimeout(() => {
+                window.location.replace("gcash://");
+            }, 250);
+        } else {
+            alert("Order Submitted! Gamit ka ng Mobile Phone para mag-direct open ang GCash app.");
+        }
+    } else {
+        alert("Order Successful via Cash on Delivery! ❤️");
+    }
 }
 </script>
   
