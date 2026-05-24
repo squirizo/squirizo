@@ -274,12 +274,7 @@ onclick="openOrderForm()">
 
         <img src="qrcode_gcash.jpeg">
 
-        <button onclick="openGcashApp()"
-class="gcash-btn">
-
-Open GCash App
-
-</button>
+      
 
         <p class="gcash-text">
     Send Payment to<br>
@@ -723,33 +718,12 @@ if(paymentScreenshot){
 // MOBILE MENU
 // =========================
 
-// =========================
-// MOBILE MENU
-// =========================
-
 function toggleMenu(){
 
     document.querySelector("nav")
     .classList.toggle("active");
 }
 
-// =========================
-// OPEN GCASH APP
-// =========================
-
-function openGcashApp(){
-
-    window.location.href = "gcash://send";
-
-    setTimeout(() => {
-
-        window.open(
-        "https://www.gcash.com/",
-        "_blank"
-        );
-
-    }, 1500);
-}
 
 // =========================
 // PAY + SUBMIT ORDER
