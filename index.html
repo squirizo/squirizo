@@ -114,16 +114,12 @@
                 <input type="file" id="paymentScreenshot" accept="image/*">
             </div>
 
-            <div id="mobileGcashContainer" style="display:none; margin-top:15px; text-align:center;">
-                <p class="gcash-text" style="color:#007dfe; font-size:14px; margin-bottom:10px; font-weight:bold;">
-                    Send Payment to:<br>
-                    0976 135 0558<br>
-                    Angelyn Ducalang
-                </p>
-                <a id="gcashMobileLink" href="gcash://" style="text-decoration:none;">
-                    <button class="submit-order-btn" style="width:100%;" onclick="submitOrder()">Confirm Order & Pay</button>
-                </a>
-            </div>
+            <a id="gcashMobileLink" href="gcash://" style="display:none; text-decoration:none; margin-top:15px;">
+                <div style="color:#007dfe; font-size:14px; margin-bottom:10px; font-weight:bold; text-align:center;">
+                    Send Payment to: 0976 135 0558 (Angelyn Ducalang)
+                </div>
+                <button class="submit-order-btn" style="width:100%;" onclick="submitOrder()">Confirm Order & Pay</button>
+            </a>
             
             <button id="normalSubmitBtn" class="submit-order-btn" onclick="payAndSubmit()">Confirm Order</button>
         </div>
@@ -193,7 +189,6 @@ function showGcashField(){
     let qrBox = document.getElementById("qrBox");
     
     let normalBtn = document.getElementById("normalSubmitBtn");
-    let mobileGcashContainer = document.getElementById("mobileGcashContainer");
     let gcashLinkWrapper = document.getElementById("gcashMobileLink");
 
     if(payment === "GCash"){
@@ -209,20 +204,20 @@ function showGcashField(){
             } else {
                 gcashLinkWrapper.href = "gcash://";
             }
-            // Itatago ang lumang static button, ilalabas ang panel na may reminder at direct hyperlink element
+            // I-on natin ang display para lumabas ang text at button nang sabay sa mobile browser
             normalBtn.style.display = "none";
-            mobileGcashContainer.style.display = "block";
+            gcashLinkWrapper.style.display = "block";
         }
     }else{
         gcashField.style.display = "none";
         qrBox.style.display = "none";
         normalBtn.style.display = "block";
-        mobileGcashContainer.style.display = "none";
+        gcashLinkWrapper.style.display = "none";
     }
 }
 
 // ========================================================
-// SUBMIT ORDER DATA (SILENT PROCESSING/NO CLEANUP)
+// SUBMIT ORDER DATA
 // ========================================================
 async function submitOrder(){
     let customerName = document.getElementById("customerName").value.trim();
