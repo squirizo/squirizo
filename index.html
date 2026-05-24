@@ -443,8 +443,6 @@ function submitOrder(){
         return;
     }
 
-    // GCASH VALIDATION
-
     if(paymentMethod === "GCash" &&
     gcashNumber === ""){
 
@@ -453,225 +451,106 @@ function submitOrder(){
         return;
     }
 
-    // ORDER TEXT
+    // SUCCESS
 
-    let ordersText = "";
+    alert("Order Successful ❤️");
 
-    if(orders.squirizo > 0){
+    // OPEN GCASH
 
-        ordersText +=
-        `SQUIRIZO x ${orders.squirizo}\n`;
+    if(paymentMethod === "GCash"){
+
+        window.location.href =
+        "gcash://send-money/639761350558";
     }
 
-    if(orders.spicy > 0){
+    // SAVE DASHBOARD DATA
 
-        ordersText +=
-        `SQUIRIZO SPICY x ${orders.spicy}\n`;
-    }
+    let totalOrders =
+    parseInt(localStorage.getItem(
+    "totalOrders")) || 1028;
 
-    // SEND EMAIL
+    let totalSales =
+    parseInt(localStorage.getItem(
+    "totalSales")) || 51400;
 
-    emailjs.send(
+    let totalCustomers =
+    parseInt(localStorage.getItem(
+    "totalCustomers")) || 956;
 
-        "service_anemsfa",
+    let squirizoSold =
+    parseInt(localStorage.getItem(
+    "squirizoSold")) || 520;
 
-        "template_eicxyd8",
+    let spicySold =
+    parseInt(localStorage.getItem(
+    "spicySold")) || 680;
 
-        {
+    totalOrders++;
 
-            title: "New Customer Order",
+    totalSales += total;
 
-            name: customerName,
+    totalCustomers++;
 
-            email: customerEmail,
+    squirizoSold += orders.squirizo;
 
-            address: address,
+    spicySold += orders.spicy;
 
-            payment: paymentMethod,
+    localStorage.setItem(
+    "totalOrders",
+    totalOrders
+    );
 
-            message:
+    localStorage.setItem(
+    "totalSales",
+    totalSales
+    );
 
-`Order Details:
+    localStorage.setItem(
+    "totalCustomers",
+    totalCustomers
+    );
 
-${ordersText}
+    localStorage.setItem(
+    "squirizoSold",
+    squirizoSold
+    );
 
-Payment Method:
-${paymentMethod}
+    localStorage.setItem(
+    "spicySold",
+    spicySold
+    );
 
-GCash Number:
-${gcashNumber}
+    // RESET
 
-Send Payment To:
-09761350558
-Mc JohnRay Montejo Ortiz
+    orders.squirizo = 0;
 
-Address:
-${address}
+    orders.spicy = 0;
 
-Total:
-₱${total}`
+    total = 0;
 
-        }
+    updateOrders();
 
-    )
+    document.getElementById(
+    "customerName").value = "";
 
-    .then(function(){
+    document.getElementById(
+    "customerEmail").value = "";
 
-        // OWNER EMAIL
+    document.getElementById(
+    "customerAddress").value = "";
 
-        emailjs.send(
+    document.getElementById(
+    "paymentMethod").value = "";
 
-            "service_anemsfa",
+    document.getElementById(
+    "gcashNumber").value = "";
 
-            "template_34zomko",
-
-            {
-
-                title: "New Customer Order",
-
-                name: customerName,
-
-                email: customerEmail,
-
-                address: address,
-
-                payment: paymentMethod,
-
-                message:
-
-`Order Details:
-
-${ordersText}
-
-Payment Method:
-${paymentMethod}
-
-GCash Number:
-${gcashNumber}
-
-Address:
-${address}
-
-Total:
-₱${total}`
-
-            }
-
-        );
-
-        // =========================
-        // DASHBOARD REALTIME DATA
-        // =========================
-
-        let totalOrders =
-        parseInt(localStorage.getItem(
-        "totalOrders")) || 1028;
-
-        let totalSales =
-        parseInt(localStorage.getItem(
-        "totalSales")) || 51400;
-
-        let totalCustomers =
-        parseInt(localStorage.getItem(
-        "totalCustomers")) || 956;
-
-        let squirizoSold =
-        parseInt(localStorage.getItem(
-        "squirizoSold")) || 520;
-
-        let spicySold =
-        parseInt(localStorage.getItem(
-        "spicySold")) || 680;
-
-        // UPDATE VALUES
-
-        totalOrders++;
-
-        totalSales += total;
-
-        totalCustomers++;
-
-        squirizoSold += orders.squirizo;
-
-        spicySold += orders.spicy;
-
-        // SAVE VALUES
-
-        localStorage.setItem(
-        "totalOrders",
-        totalOrders
-        );
-
-        localStorage.setItem(
-        "totalSales",
-        totalSales
-        );
-
-        localStorage.setItem(
-        "totalCustomers",
-        totalCustomers
-        );
-
-        localStorage.setItem(
-        "squirizoSold",
-        squirizoSold
-        );
-
-        localStorage.setItem(
-        "spicySold",
-        spicySold
-        );
-
-        // SUCCESS
-
-       alert("Order Successful ❤️");
-
-if(paymentMethod === "GCash"){
-
-    window.location.href =
-    "gcash://send-money/639761350558";
+    closeOrderForm();
 }
 
-        // RESET
 
-        orders.squirizo = 0;
 
-        orders.spicy = 0;
 
-        total = 0;
-
-        updateOrders();
-
-        // CLEAR FORM
-
-        document.getElementById(
-        "customerName").value = "";
-
-        document.getElementById(
-        "customerEmail").value = "";
-
-        document.getElementById(
-        "customerAddress").value = "";
-
-        document.getElementById(
-        "paymentMethod").value = "";
-
-        document.getElementById(
-        "gcashNumber").value = "";
-
-        closeOrderForm();
-
-    })
-
-    .catch(function(error){
-
-        alert("Email failed ❌");
-
-        console.log(error);
-
-    });
-
-}
 
 // MOBILE MENU
 
