@@ -273,25 +273,35 @@ onclick="openOrderForm()">
     <div id="qrBox"
 class="qr-box">
 
-        <p>
-            Scan QR Code to Pay
-        </p>
+    <p class="desktop-only">
+        Scan QR Code to Pay
+    </p>
 
-        <img src="qrcode_gcash.jpeg"
-        style="
-        width:220px;
-        border-radius:10px;
-        ">
+    <!-- QR FOR DESKTOP -->
 
-        <p style="font-size:14px;">
-            GCash: 09761350558
-        </p>
+    <img src="qrcode_gcash.jpeg"
+    class="desktop-only"
+    style="
+    width:220px;
+    border-radius:10px;
+    ">
 
-    </div>
+    <!-- BUTTON FOR MOBILE -->
+
+    <button
+    type="button"
+    class="gcash-btn mobile-only"
+    onclick="openGcash()">
+
+        Open GCash
+
+    </button>
+
+    <p style="font-size:14px;">
+        GCash: 09761350558
+    </p>
 
 </div>
-
-
 
 <script>
 
@@ -435,27 +445,13 @@ function showGcashField(){
     document.getElementById(
     "qrBox");
 
-    const isMobile =
-    /Android|iPhone|iPad|iPod/i
-    .test(navigator.userAgent);
-
     if(payment === "GCash"){
 
         gcashField.style.display =
         "block";
 
-        // DESKTOP ONLY
-
-        if(!isMobile){
-
-            qrBox.style.display =
-            "block";
-
-        }else{
-
-            qrBox.style.display =
-            "none";
-        }
+        qrBox.style.display =
+        "block";
 
     }else{
 
@@ -465,7 +461,6 @@ function showGcashField(){
         qrBox.style.display =
         "none";
     }
-
 }
 
 // =========================
@@ -718,6 +713,11 @@ function toggleMenu(){
     .classList.toggle("active");
 }
 
+function openGcash(){
+
+    window.location.href =
+    "gcash://send-money/639761350558";
+}
 </script>
 
   
