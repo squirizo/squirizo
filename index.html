@@ -271,11 +271,7 @@ onclick="openOrderForm()">
     <!-- QR BOX -->
 
     <div id="qrBox"
-    style="
-    display:none;
-    text-align:center;
-    margin-top:15px;
-    ">
+class="qr-box">
 
         <p>
             Scan QR Code to Pay
@@ -439,8 +435,6 @@ function showGcashField(){
     document.getElementById(
     "qrBox");
 
-    // CHECK IF MOBILE
-
     const isMobile =
     /Android|iPhone|iPad|iPod/i
     .test(navigator.userAgent);
@@ -450,19 +444,17 @@ function showGcashField(){
         gcashField.style.display =
         "block";
 
-        // MOBILE = NO QR
+        // DESKTOP ONLY
 
-        if(isMobile){
-
-            qrBox.style.display =
-            "none";
-
-        }else{
-
-            // DESKTOP = SHOW QR
+        if(!isMobile){
 
             qrBox.style.display =
             "block";
+
+        }else{
+
+            qrBox.style.display =
+            "none";
         }
 
     }else{
@@ -473,6 +465,7 @@ function showGcashField(){
         qrBox.style.display =
         "none";
     }
+
 }
 
 // =========================
