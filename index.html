@@ -258,43 +258,15 @@ onclick="openOrderForm()">
 
         </select>
 
-        <!-- GCASH -->
-
-       <!-- GCASH -->
-
 <!-- GCASH -->
 
 <div id="gcashField" style="display:none;">
 
-    <!-- MOBILE ONLY -->
+    <input type="text"
+    id="gcashNumber"
+    placeholder="Enter GCash Number">
 
-    <div class="mobile-only">
-
-        <p class="gcash-text">
-            Please send your payment to<br><br>
-
-            <strong>
-                0976 135 0558
-            </strong><br>
-
-            Angelyn Ducalang
-        </p>
-
-        <button
-        class="gcash-btn"
-        onclick="openGcash()">
-
-            Open GCash
-
-        </button>
-
-    </div>
-
-    <!-- DESKTOP ONLY -->
-
-    <div id="qrBox"
-    class="desktop-only"
-    style="display:none; text-align:center; margin-top:15px;">
+    <div id="qrBox" style="display:none; text-align:center; margin-top:15px;">
 
         <p>
             Scan QR Code to Pay
@@ -303,34 +275,24 @@ onclick="openOrderForm()">
         <img src="qrcode_gcash.jpeg">
 
         <p class="gcash-text">
-            Send Payment to<br>
-
-            <strong>
-                0976 135 0558
-            </strong><br>
-
-            Angelyn Ducalang
-        </p>
-
-        <!-- REFERENCE -->
-
-        <input type="text"
-        id="referenceNumber"
-        placeholder="Enter GCash Reference Number">
-
-        <!-- SCREENSHOT -->
-
-        <p class="gcash-text">
-            <strong>
-                Upload screenshot of your payment
-            </strong>
-        </p>
-
-        <input type="file"
-        id="paymentScreenshot"
-        accept="image/*">
+    Send Payment to<br>
+    <strong>0976 135 0558</strong><br>
+    Mc JohnRay Montejo Ortiz
+</p>
 
     </div>
+
+    <!-- REFERENCE NUMBER -->
+
+    <input type="text"
+    id="referenceNumber"
+    placeholder="Enter GCash Reference Number">
+
+    <!-- SCREENSHOT -->
+ <p class="gcash-text"><br><strong>upload screenshot of your payment</strong><br></p>
+    <input type="file"
+    id="paymentScreenshot"
+    accept="image/*">
 
 </div>
 
@@ -475,6 +437,7 @@ function closeOrderForm(){
 // =========================
 // SHOW GCASH FIELD
 // =========================
+
 function showGcashField(){
 
     let payment =
@@ -489,27 +452,13 @@ function showGcashField(){
     document.getElementById(
     "qrBox");
 
-    const isMobile =
-    /Android|iPhone|iPad|iPod/i
-    .test(navigator.userAgent);
-
     if(payment === "GCash"){
 
         gcashField.style.display =
         "block";
 
-        // DESKTOP ONLY QR
-
-        if(isMobile){
-
-            qrBox.style.display =
-            "none";
-
-        }else{
-
-            qrBox.style.display =
-            "block";
-        }
+        qrBox.style.display =
+        "block";
 
     }else{
 
@@ -520,6 +469,7 @@ function showGcashField(){
         "none";
     }
 }
+
 // =========================
 // SUBMIT ORDER
 // =========================
@@ -786,8 +736,11 @@ function toggleMenu(){
 
 function openGcash(){
 
-    window.location.href =
-    "gcash://send-money/639761350558";
+    if(isMobile){
+
+   window.location.href =
+"https://link.gcash.com/send?mobile=639761350558";
+}
 }
 
 </script>
