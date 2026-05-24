@@ -266,13 +266,35 @@ onclick="openOrderForm()">
 
 <div id="gcashField" style="display:none;">
 
-    <input type="text"
-    id="gcashNumber"
-    placeholder="Enter GCash Number">
+    <!-- MOBILE ONLY -->
 
-   <div id="qrBox"
-class="desktop-only"
-style="display:none; text-align:center; margin-top:15px;">
+    <div class="mobile-only">
+
+        <p class="gcash-text">
+            Please send your payment to<br><br>
+
+            <strong>
+                0976 135 0558
+            </strong><br>
+
+            Angelyn Ducalang
+        </p>
+
+        <button
+        class="gcash-btn"
+        onclick="openGcash()">
+
+            Open GCash
+
+        </button>
+
+    </div>
+
+    <!-- DESKTOP ONLY -->
+
+    <div id="qrBox"
+    class="desktop-only"
+    style="display:none; text-align:center; margin-top:15px;">
 
         <p>
             Scan QR Code to Pay
@@ -280,33 +302,35 @@ style="display:none; text-align:center; margin-top:15px;">
 
         <img src="qrcode_gcash.jpeg">
 
-        <button
-class="gcash-btn mobile-only"
-onclick="openGcash()">
+        <p class="gcash-text">
+            Send Payment to<br>
 
-    Open GCash
+            <strong>
+                0976 135 0558
+            </strong><br>
 
-</button>
+            Angelyn Ducalang
+        </p>
+
+        <!-- REFERENCE -->
+
+        <input type="text"
+        id="referenceNumber"
+        placeholder="Enter GCash Reference Number">
+
+        <!-- SCREENSHOT -->
 
         <p class="gcash-text">
-    Send Payment to<br>
-    <strong>0976 135 0558</strong><br>
-    Mc JohnRay Montejo Ortiz
-</p>
+            <strong>
+                Upload screenshot of your payment
+            </strong>
+        </p>
+
+        <input type="file"
+        id="paymentScreenshot"
+        accept="image/*">
 
     </div>
-
-    <!-- REFERENCE NUMBER -->
-
-    <input type="text"
-    id="referenceNumber"
-    placeholder="Enter GCash Reference Number">
-
-    <!-- SCREENSHOT -->
- <p class="gcash-text"><br><strong>upload screenshot of your payment</strong><br></p>
-    <input type="file"
-    id="paymentScreenshot"
-    accept="image/*">
 
 </div>
 
