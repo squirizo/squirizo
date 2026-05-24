@@ -967,3 +967,26 @@ MOBILE RESPONSIVE
         display:inline-block;
     }
 }
+
+/* GCASH MOBILE BUTTON */
+
+.mobile-only{
+    display:none;
+}
+
+.desktop-only{
+    display:block;
+}
+
+/* MOBILE VIEW */
+
+@media screen and (max-width:768px){
+
+    .mobile-only{
+        display:inline-block !important;
+    }
+
+    .desktop-only{
+        display:none !important;
+    }
+}
