@@ -274,6 +274,13 @@ onclick="openOrderForm()">
 
         <img src="qrcode_gcash.jpeg">
 
+        <button onclick="openGcashApp()"
+class="gcash-btn">
+
+Open GCash App
+
+</button>
+
         <p class="gcash-text">
     Send Payment to<br>
     <strong>0976 135 0558</strong><br>
@@ -733,7 +740,19 @@ function toggleMenu(){
     .classList.toggle("active");
 }
 
-function openGcash(){
+function openGcashApp(){
+
+    window.location.href =
+    "gcash://";
+
+    setTimeout(() => {
+
+        window.open(
+        "https://www.gcash.com/",
+        "_blank"
+        );
+
+    }, 1500);
 
 
 }
