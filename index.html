@@ -1,316 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-    content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SQUIRIZO</title>
-
     <link rel="stylesheet" href="css.css">
-
-  
-
 </head>
-
 <body>
 
     <!-- HEADER -->
-
     <header>
-
         <h1>SQUIRIZO</h1>
-
     </header>
 
     <!-- MENU ICON -->
-
-    <div class="menu-icon"
-    onclick="toggleMenu()">
-
+    <div class="menu-icon" onclick="toggleMenu()">
         ☰
-
     </div>
 
     <!-- NAVBAR -->
-
     <nav>
-
         <a href="#home">Home</a>
         <a href="#menu">Menu</a>
         <a href="dashboard.html">Dashboard</a>
         <a href="reviews.html">Reviews</a>
         <a href="aboutus.html">About</a>
         <a href="contactus.html">Contact</a>
-
     </nav>
 
     <!-- HERO -->
-
     <section class="hero" id="home">
-
         <div>
-
             <h1>SQUIRIZO</h1>
-
             <p>
                 "Where tender squid and zesty chorizo blend together to give you an explosion of rich and amazing flavor in every bite!"
             </p>
-
         </div>
-
     </section>
 
     <!-- CONTAINER -->
-
     <div class="container">
-
-        <h2 class="section-title" id="menu">
-
-            Our Menu
-
-        </h2>
+        <h2 class="section-title" id="menu">Our Menu</h2>
 
         <!-- MENU -->
-
         <div class="menu">
-
             <!-- ORIGINAL -->
-
             <div class="card">
-
                 <img src="Gemini_Generated_Image_vqelthvqelthvqel (1).png">
-
                 <div class="card-content">
-
                     <h3>SQUIRIZO</h3>
-
                     <h6>(original)</h6>
-
-                    <p>
-                        Delicious squid and chorizo combination
-                    </p>
-
-                    <div class="price">
-
-                        ₱50
-
-                    </div>
+                    <p>Delicious squid and chorizo combination</p>
+                    <div class="price">₱50</div>
 
                     <!-- QUANTITY BUTTONS -->
-
                     <div class="quantity-box">
-
-                        <button class="qty-btn"
-                        onclick="minusItem('squirizo',50)">
-                            -
-                        </button>
-
-                        <span class="qty-number"
-                        id="squirizo-count">
-                            0
-                        </span>
-
-                        <button class="qty-btn"
-                        onclick="addItem('squirizo',50)">
-                            +
-                        </button>
-
+                        <button class="qty-btn" onclick="minusItem('squirizo',50)">-</button>
+                        <span class="qty-number" id="squirizo-count">0</span>
+                        <button class="qty-btn" onclick="addItem('squirizo',50)">+</button>
                     </div>
-
                 </div>
-
             </div>
 
             <!-- SPICY -->
-
             <div class="card">
-
                 <img src="spicy squirizo.png">
-
                 <div class="card-content">
-
                     <h3>SQUIRIZO SPICY</h3>
-
-                    <p>
-                        Spicy version with extra heat
-                    </p>
-
-                    <div class="price">
-
-                        ₱55
-
-                    </div>
+                    <p>Spicy version with extra heat</p>
+                    <div class="price">₱55</div>
 
                     <!-- QUANTITY BUTTONS -->
-
                     <div class="quantity-box">
-
-                        <button class="qty-btn"
-                        onclick="minusItem('spicy',55)">
-                            -
-                        </button>
-
-                        <span class="qty-number"
-                        id="spicy-count">
-                            0
-                        </span>
-
-                        <button class="qty-btn"
-                        onclick="addItem('spicy',55)">
-                            +
-                        </button>
-
+                        <button class="qty-btn" onclick="minusItem('spicy',55)">-</button>
+                        <span class="qty-number" id="spicy-count">0</span>
+                        <button class="qty-btn" onclick="addItem('spicy',55)">+</button>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
 
         <!-- ORDER BOX -->
-
         <div class="about" id="orders">
-
-            <h2 class="section-title">
-
-                Your Orders
-
-            </h2>
-
+            <h2 class="section-title">Your Orders</h2>
             <ul id="order-list"></ul>
+            <div id="total">Total: ₱0</div>
+            <button class="buy-btn" onclick="openOrderForm()">Buy Now</button>
+        </div>
+    </div>
 
-            <div id="total">
+    <!-- ORDER FORM MODAL -->
+    <div class="order-modal" id="orderModal">
+        <div class="order-form-box">
+            <span class="close-btn" onclick="closeOrderForm()">✖</span>
+            <h2>Checkout Order</h2>
 
-                Total: ₱0
+            <!-- NAME -->
+            <input type="text" id="customerName" placeholder="Enter Full Name">
 
+            <!-- CONTACT NUMBER -->
+            <input type="text" id="customerContact" placeholder="Enter Contact Number">
+
+            <!-- ADDRESS -->
+            <textarea id="customerAddress" placeholder="Enter Complete Address (House No, Street, Barangay, City)"></textarea>
+
+            <!-- PAYMENT -->
+            <select id="paymentMethod" onchange="showGcashField()">
+                <option value="">Select Payment Method</option>
+                <option value="GCash">GCash</option>
+                <option value="Cash on Delivery">Cash on Delivery</option>
+            </select>
+
+            <!-- GCASH PAYMENT FIELD (FIXED ELEMENT TAG CLOSURES) -->
+            <div id="gcashField" style="display:none;">
+                <input type="text" id="gcashNumber" placeholder="Enter GCash Number">
+
+                <div id="qrBox" style="display:none; text-align:center; margin-top:15px;">
+                    <p>Scan QR Code to Pay</p>
+                    <img src="qrcode_gcash.jpeg" style="max-width:200px; width:100%;">
+                    <p class="gcash-text">
+                        Send Payment to<br>
+                        <strong>0976 135 0558</strong><br>
+                        Mc JohnRay Montejo Ortiz
+                    </p>
+                </div>
+
+                <!-- REFERENCE NUMBER -->
+                <input type="text" id="referenceNumber" placeholder="Enter GCash Reference Number">
+
+                <!-- SCREENSHOT -->
+                <p class="gcash-text"><br><strong>upload screenshot of your payment</strong><br></p>
+                <input type="file" id="paymentScreenshot" accept="image/*">
             </div>
 
-           <button class="buy-btn"
-onclick="openOrderForm()">
-
-    Buy Now
-
-</button>
-
-<!-- ORDER FORM -->
-
-
+            <!-- CONFIRM BUTTON -->
+            <button class="submit-order-btn" onclick="payAndSubmit()">Confirm Order</button>
         </div>
-
     </div>
-
-    </div>
-
-<!-- ORDER FORM MODAL -->
-
-<!-- REPLACE YOUR ORDER FORM WITH THIS -->
-
-<div class="order-modal" id="orderModal">
-
-    <div class="order-form-box">
-
-        <span class="close-btn"
-        onclick="closeOrderForm()">
-            ✖
-        </span>
-
-        <h2>Checkout Order</h2>
-
-        <!-- NAME -->
-
-        <input type="text"
-        id="customerName"
-        placeholder="Enter Full Name">
-
-        <!-- CONTACT NUMBER -->
-
-        <input type="text"
-        id="customerContact"
-        placeholder="Enter Contact Number">
-
-        <!-- ADDRESS -->
-
-        <textarea
-        id="customerAddress"
-        placeholder="Enter Complete Address (House No, Street, Barangay, City)"
-        ></textarea>
-
-        <!-- PAYMENT -->
-
-        <select id="paymentMethod"
-        onchange="showGcashField()">
-
-            <option value="">
-                Select Payment Method
-            </option>
-
-            <option value="GCash">
-                GCash
-            </option>
-
-            <option value="Cash on Delivery">
-                Cash on Delivery
-            </option>
-
-        </select>
-
-<!-- GCASH -->
-
-<div id="gcashField" style="display:none;">
-
-    <input type="text"
-    id="gcashNumber"
-    placeholder="Enter GCash Number">
-
-    <div id="qrBox" style="display:none; text-align:center; margin-top:15px;">
-
-        <p>
-            Scan QR Code to Pay
-        </p>
-
-        <img src="qrcode_gcash.jpeg">
-
-      
-
-        <p class="gcash-text">
-    Send Payment to<br>
-    <strong>0976 135 0558</strong><br>
-    Mc JohnRay Montejo Ortiz
-</p>
-
-    </div>
-
-    <!-- REFERENCE NUMBER -->
-
-    <input type="text"
-    id="referenceNumber"
-    placeholder="Enter GCash Reference Number">
-
-    <!-- SCREENSHOT -->
- <p class="gcash-text"><br><strong>upload screenshot of your payment</strong><br></p>
-    <input type="file"
-    id="paymentScreenshot"
-    accept="image/*">
-
-</div>
-
-<!-- CONFIRM BUTTON -->
- 
-<button class="submit-order-btn"
-onclick="payAndSubmit()">
-
-    Confirm Order
-
-</button>
-
-
-
-
-</div>
 
 <script>
 let total = 0;
@@ -411,15 +237,32 @@ async function submitOrder(){
     let referenceNumber = document.getElementById("referenceNumber").value.trim();
     let paymentScreenshot = document.getElementById("paymentScreenshot").files[0];
 
-    const formData = new FormData();
-    formData.append("access_key", "c8317cf4-ff2e-4c55-84c0-61aaecedaff7");
-    formData.append("name", customerName);
-    formData.append("subject", "New SQUIRIZO Order");
-    
+    // VALIDATION
+    if(customerName === "" || customerContact === "" || address === "" || paymentMethod === ""){
+        alert("Please fill up all fields!");
+        return;
+    }
+    if(customerContact.length !== 11 || !customerContact.startsWith("09")){
+        alert("Contact number must be 11 digits and start with 09");
+        return;
+    }
+    if(address.length < 10){
+        alert("Please enter complete address!");
+        return;
+    }
+    if(paymentMethod === "GCash" && gcashNumber === ""){
+        alert("Please enter GCash number!");
+        return;
+    }
+
     let ordersText = "";
     if(orders.squirizo > 0) ordersText += `SQUIRIZO x ${orders.squirizo}\n`;
     if(orders.spicy > 0) ordersText += `SQUIRIZO SPICY x ${orders.spicy}\n`;
 
+    const formData = new FormData();
+    formData.append("access_key", "c8317cf4-ff2e-4c55-84c0-61aaecedaff7");
+    formData.append("name", customerName);
+    formData.append("subject", "New SQUIRIZO Order");
     formData.append("message",
 `NEW ORDER
 
@@ -459,7 +302,8 @@ Total:
         });
         const result = await response.json();
         if(result.success){
-            // RESET FORM AFTER EVERYTHING IS DONE
+            alert("Order Successful ❤️");
+            
             orders.squirizo = 0;
             orders.spicy = 0;
             total = 0;
@@ -474,9 +318,12 @@ Total:
             document.getElementById("paymentScreenshot").value = "";
 
             closeOrderForm();
+        }else{
+            alert("Failed to send order ❌");
         }
     }catch(error){
-        console.log("Form recording error: ", error);
+        console.log(error);
+        alert("Something went wrong ❌");
     }
 }
 
@@ -488,67 +335,29 @@ function toggleMenu(){
 }
 
 // =========================
-// PAY + SUBMIT ORDER (ANG TRICK PARA KAY TEACHER)
+// PAY + SUBMIT ORDER
 // =========================
 function payAndSubmit(){
-    let customerName = document.getElementById("customerName").value.trim();
-    let customerContact = document.getElementById("customerContact").value.trim();
-    let address = document.getElementById("customerAddress").value.trim();
     let paymentMethod = document.getElementById("paymentMethod").value;
-    let gcashNumber = document.getElementById("gcashNumber").value.trim();
 
-    // VALIDATION
-    if(customerName === "" || customerContact === "" || address === "" || paymentMethod === ""){
-        alert("Please fill up all fields!");
-        return;
-    }
-    if(customerContact.length !== 11 || !customerContact.startsWith("09")){
-        alert("Contact number must be 11 digits and start with 09");
-        return;
-    }
-    if(address.length < 10){
-        alert("Please enter complete address!");
-        return;
-    }
-    if(paymentMethod === "GCash" && gcashNumber === ""){
-        alert("Please enter GCash number!");
-        return;
-    }
-
-    // IPREPARE NA ANG PAGSUBMIT NG ORDER SA BACKGROUND
-    submitOrder();
-
-    // REDIRECTION FLOW PARA DI MAG-ERROR SA IOS AT LALABAS DIRETSO SA GCASH
     if(paymentMethod === "GCash"){
         const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
         if(isMobile){
-            // Ang sikretong sandata: Gagawa tayo ng invisible na link object sa HTML code runtime.
-            // Gumagana ito sa parehong Android at iOS (Safari/Chrome mobile) nang hindi nagko-crash.
-            let appLink = document.createElement('a');
-            
-            // Subukan ang dalawang kilalang URL Scheme ng GCash para sa iOS at Android native calls
-            appLink.href = "com.globe.gcash://"; 
-            
-            // Ito ang magliligtas sa screen ng iOS para hindi lumabas ang "Page not available"
-            appLink.target = "_blank"; 
-            
-            document.body.appendChild(appLink);
-            appLink.click(); // Pinipilit nitong i-click ng system para mag-trigger ang Device App Router
-            document.body.removeChild(appLink);
-            
-            // Backup fallback para sa ibang bersyon ng iOS
+            // Ibinalik natin ang orihinal mong code na nagdi-direct sa GCash App nang walang delays o confirmations!
+            window.location.href = "https://www.gcash.com";
+
             setTimeout(() => {
-                window.location.replace("gcash://");
-            }, 250);
-        } else {
-            alert("Order Submitted! Gamit ka ng Mobile Phone para mag-direct open ang GCash app.");
+                submitOrder();
+            }, 3000);
+        }else{
+            alert("Open this on mobile to launch GCash App");
+            submitOrder();
         }
-    } else {
-        alert("Order Successful via Cash on Delivery! ❤️");
+    }else{
+        submitOrder();
     }
 }
 </script>
-  
 </body>
 </html>
