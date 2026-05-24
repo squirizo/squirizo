@@ -990,3 +990,215 @@ MOBILE RESPONSIVE
         display:none !important;
     }
 }
+
+/* ORDER MODAL */
+
+.order-modal{
+
+    display:none;
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.6);
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:999;
+}
+
+/* ORDER FORM BOX */
+
+.order-form-box{
+
+    background:white;
+
+    width:90%;
+    max-width:500px;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    position:relative;
+
+    max-height:90vh;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    margin:auto;
+
+    box-sizing:border-box;
+}
+
+/* SCROLLBAR */
+
+.order-form-box::-webkit-scrollbar{
+
+    width:6px;
+}
+
+.order-form-box::-webkit-scrollbar-thumb{
+
+    background:#8b1e00;
+
+    border-radius:10px;
+}
+
+/* CLOSE BUTTON */
+
+.close-btn{
+
+    position:absolute;
+
+    right:20px;
+    top:10px;
+
+    font-size:40px;
+
+    cursor:pointer;
+
+    color:#3d2418;
+}
+
+/* INPUTS */
+
+.order-form-box input,
+.order-form-box textarea,
+.order-form-box select{
+
+    width:100%;
+
+    padding:18px;
+
+    margin-top:15px;
+
+    border-radius:15px;
+
+    border:1px solid #ccc;
+
+    font-size:18px;
+
+    box-sizing:border-box;
+}
+
+/* TEXTAREA */
+
+.order-form-box textarea{
+
+    resize:none;
+
+    height:140px;
+}
+
+/* BUTTON */
+
+.submit-order-btn{
+
+    width:100%;
+
+    padding:18px;
+
+    border:none;
+
+    border-radius:15px;
+
+    background:#8b1e00;
+
+    color:white;
+
+    font-size:22px;
+
+    margin-top:20px;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.submit-order-btn:hover{
+
+    background:#a32600;
+}
+
+/* QR BOX */
+
+#qrBox{
+
+    text-align:center;
+
+    margin-top:20px;
+}
+
+/* QR IMAGE */
+
+#qrBox img{
+
+    width:220px;
+
+    max-width:100%;
+
+    display:block;
+
+    margin:15px auto;
+
+    border-radius:15px;
+}
+
+/* QR TEXT */
+
+#qrBox p{
+
+    font-size:18px;
+
+    color:#3d2418;
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+    .order-form-box{
+
+        width:95%;
+
+        padding:20px;
+    }
+
+    .order-form-box input,
+    .order-form-box textarea,
+    .order-form-box select{
+
+        font-size:16px;
+    }
+
+    .submit-order-btn{
+
+        font-size:18px;
+    }
+}
+
+.gcash-text{
+
+    font-size:16px;
+
+    line-height:1.7;
+
+    color:#3d2418;
+
+    margin-top:10px;
+}
+
+.gcash-text strong{
+
+    font-size:22px;
+
+    color:#8b1e00;
+}
