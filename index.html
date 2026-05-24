@@ -578,6 +578,27 @@ Mc JohnRay Montejo Ortiz`
     }
 }
 
+function showGcashField(){
+
+    let payment =
+    document.getElementById(
+    "paymentMethod").value;
+
+    let gcashField =
+    document.getElementById(
+    "gcashField");
+
+    if(payment === "GCash"){
+
+        gcashField.style.display =
+        "block";
+
+    }else{
+
+        gcashField.style.display =
+        "none";
+    }
+}
 </script>
 
   
