@@ -661,8 +661,7 @@ paymentScreenshot
             // =========================
             // GCASH PAYMENT
             // =========================
-
-          if(paymentMethod === "GCash"){
+if(paymentMethod === "GCash"){
 
     const isMobile =
     /Android|iPhone|iPad|iPod/i
@@ -670,11 +669,10 @@ paymentScreenshot
 
     if(isMobile){
 
-        // OPEN GCASH APP
-
-        window.location.href =
-        "gcash://";
-
+        window.open(
+        "https://www.gcash.com/",
+        "_blank"
+        );
     }
 }
 
