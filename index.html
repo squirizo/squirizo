@@ -262,44 +262,55 @@ onclick="openOrderForm()">
 
        <!-- GCASH -->
 
+<!-- GCASH -->
+
 <div id="gcashField" style="display:none;">
 
     <input type="text"
     id="gcashNumber"
     placeholder="Enter GCash Number">
 
-    <!-- QR BOX -->
+    <div id="qrBox" style="display:none; text-align:center; margin-top:15px;">
 
-    <div id="qrBox"
-class="qr-box">
+        <p>
+            Scan QR Code to Pay
+        </p>
 
-    <p class="desktop-only">
-        Scan QR Code to Pay
-    </p>
+        <img src="qrcode_gcash.jpeg">
 
-    <!-- QR FOR DESKTOP -->
+        <p class="gcash-text">
+    Send Payment to<br>
+    <strong>0976 135 0558</strong><br>
+    Mc JohnRay Montejo Ortiz
+</p>
 
-    <img src="qrcode_gcash.jpeg"
-    class="desktop-only"
-    style="
-    width:220px;
-    border-radius:10px;
-    ">
+    </div>
 
-    <!-- BUTTON FOR MOBILE -->
+    <!-- REFERENCE NUMBER -->
 
-    <button
-    type="button"
-    class="gcash-btn mobile-only"
-    onclick="openGcash()">
+    <input type="text"
+    id="referenceNumber"
+    placeholder="Enter GCash Reference Number">
 
-        Open GCash
+    <!-- SCREENSHOT -->
+ <p class="gcash-text"><br><strong>upload screenshot of your payment</strong><br></p>
+    <input type="file"
+    id="paymentScreenshot"
+    accept="image/*">
 
-    </button>
+</div>
 
-    <p style="font-size:14px;">
-        GCash: 09761350558
-    </p>
+<!-- CONFIRM BUTTON -->
+ 
+<button class="submit-order-btn"
+onclick="submitOrder()">
+
+    Confirm Order
+
+</button>
+
+
+
 
 </div>
 
@@ -587,8 +598,8 @@ async function submitOrder(){
     "New SQUIRIZO Order"
     );
 
-    formData.append(
-    "message",
+  formData.append(
+"message",
 
 `NEW ORDER
 
@@ -610,10 +621,17 @@ ${paymentMethod}
 GCash Number:
 ${gcashNumber}
 
+Reference Number:
+${referenceNumber}
+
 Total:
 ₱${total}`
-    );
+);
 
+formData.append(
+"attachment",
+paymentScreenshot
+);
     try{
 
         const response =
@@ -718,6 +736,14 @@ function openGcash(){
     window.location.href =
     "gcash://send-money/639761350558";
 }
+
+let referenceNumber =
+document.getElementById(
+"referenceNumber").value.trim();
+
+let paymentScreenshot =
+document.getElementById(
+"paymentScreenshot").files[0];
 </script>
 
   
