@@ -739,7 +739,7 @@ function toggleMenu(){
 
 function openGcashApp(){
 
-    window.location.href = "gcash://";
+    window.location.href = "gcash://send";
 
     setTimeout(() => {
 
@@ -775,15 +775,16 @@ function payAndSubmit(){
 
             // OPEN GCASH APP
 
-          window.location.href = "gcash://";
+            window.location.href =
+            "gcash://send";
 
-setTimeout(async () => {
+            setTimeout(async () => {
 
-    await submitOrder();
+                await submitOrder();
 
-}, 3000);
+            }, 3000);
 
-              }else{
+        }else{
 
             // DESKTOP
 
