@@ -397,7 +397,9 @@ function closeOrderForm(){
 
 // SUBMIT ORDER
 
-function submitOrder(){
+
+
+async function submitOrder(){
 
     let customerName =
     document.getElementById(
@@ -439,136 +441,136 @@ function submitOrder(){
         return;
     }
 
-    // SUCCESS
+    // ORDER TEXT
 
-    alert("Order Successful ❤️");
+    let ordersText = "";
 
-    // OPEN GCASH
+    if(orders.squirizo > 0){
 
-    if(paymentMethod === "GCash"){
-
-        window.location.href =
-        "gcash://send-money/639761350558";
+        ordersText +=
+        `SQUIRIZO x ${orders.squirizo}\n`;
     }
 
-    // SAVE DASHBOARD DATA
+    if(orders.spicy > 0){
 
-    let totalOrders =
-    parseInt(localStorage.getItem(
-    "totalOrders")) || 1028;
+        ordersText +=
+        `SQUIRIZO SPICY x ${orders.spicy}\n`;
+    }
 
-    let totalSales =
-    parseInt(localStorage.getItem(
-    "totalSales")) || 51400;
+    // SEND EMAIL
 
-    let totalCustomers =
-    parseInt(localStorage.getItem(
-    "totalCustomers")) || 956;
+    const response = await fetch(
+    "https://api.web3forms.com/submit",
+    {
 
-    let squirizoSold =
-    parseInt(localStorage.getItem(
-    "squirizoSold")) || 520;
+        method: "POST",
 
-    let spicySold =
-    parseInt(localStorage.getItem(
-    "spicySold")) || 680;
+        headers: {
+            "Content-Type":
+            "application/json"
+        },
 
-    totalOrders++;
+        body: JSON.stringify({
 
-    totalSales += total;
+            access_key:
+            "c8317cf4-ff2e-4c55-84c0-61aaeecdaff7",
 
-    totalCustomers++;
+            subject:
+            "New SQUIRIZO Order",
 
-    squirizoSold += orders.squirizo;
+            from_name:
+            "SQUIRIZO Website",
 
-    spicySold += orders.spicy;
+            name:
+            customerName,
 
-    localStorage.setItem(
-    "totalOrders",
-    totalOrders
-    );
+            email:
+            customerEmail,
 
-    localStorage.setItem(
-    "totalSales",
-    totalSales
-    );
+            message:
 
-    localStorage.setItem(
-    "totalCustomers",
-    totalCustomers
-    );
+`NEW ORDER
 
-    localStorage.setItem(
-    "squirizoSold",
-    squirizoSold
-    );
+Customer:
+${customerName}
 
-    localStorage.setItem(
-    "spicySold",
-    spicySold
-    );
+Email:
+${customerEmail}
 
-    // RESET
+Address:
+${address}
 
-    orders.squirizo = 0;
+Orders:
+${ordersText}
 
-    orders.spicy = 0;
+Payment Method:
+${paymentMethod}
 
-    total = 0;
+GCash Number:
+${gcashNumber}
 
-    updateOrders();
+Total:
+₱${total}
 
-    document.getElementById(
-    "customerName").value = "";
-
-    document.getElementById(
-    "customerEmail").value = "";
-
-    document.getElementById(
-    "customerAddress").value = "";
-
-    document.getElementById(
-    "paymentMethod").value = "";
-
-    document.getElementById(
-    "gcashNumber").value = "";
-
-    closeOrderForm();
-}
+Send Payment To:
+09761350558
+Mc JohnRay Montejo Ortiz`
 
 
+        })
 
+    });
 
+    const result =
+    await response.json();
 
-// MOBILE MENU
+    if(result.success){
 
-function toggleMenu(){
+        alert(
+        "Order Successful ❤️"
+        );
 
-    document.querySelector("nav")
-    .classList.toggle("active");
-}
+        // OPEN GCASH
 
-// GCASH FIELD
+        if(paymentMethod ===
+        "GCash"){
 
-function showGcashField(){
+            window.location.href =
+            "gcash://send-money/639761350558";
+        }
 
-    let payment =
-    document.getElementById(
-    "paymentMethod").value;
+        // RESET
 
-    let gcashField =
-    document.getElementById(
-    "gcashField");
+        orders.squirizo = 0;
+        orders.spicy = 0;
+        total = 0;
 
-    if(payment === "GCash"){
+        updateOrders();
 
-        gcashField.style.display =
-        "block";
+        document.getElementById(
+        "customerName").value = "";
+
+        document.getElementById(
+        "customerEmail").value = "";
+
+        document.getElementById(
+        "customerAddress").value = "";
+
+        document.getElementById(
+        "paymentMethod").value = "";
+
+        document.getElementById(
+        "gcashNumber").value = "";
+
+        closeOrderForm();
 
     }else{
 
-        gcashField.style.display =
-        "none";
+        alert(
+        "Failed to send order ❌"
+        );
+
+        console.log(result);
     }
 }
 
