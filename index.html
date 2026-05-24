@@ -637,11 +637,13 @@ ${referenceNumber}
 Total:
 ₱${total}`
 );
+if(paymentScreenshot){
 
-formData.append(
-"attachment",
-paymentScreenshot
-);
+    formData.append(
+    "attachment",
+    paymentScreenshot
+    );
+}
     try{
 
         const response =
@@ -773,17 +775,13 @@ function payAndSubmit(){
 
             // OPEN GCASH APP
 
-            window.location.href =
-            "gcash://";
+          window.location.href = "gcash://";
 
-            // WAIT 3 SECONDS
-            // THEN SEND ORDER
+setTimeout(async () => {
 
-            setTimeout(() => {
+    await submitOrder();
 
-                submitOrder();
-
-            }, 3000);
+}, 3000);
 
               }else{
 
