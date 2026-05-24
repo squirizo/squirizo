@@ -1202,3 +1202,38 @@ MOBILE RESPONSIVE
 
     color:#8b1e00;
 }
+
+/* MOBILE ONLY */
+
+@media screen and (max-width:768px){
+
+    #qrBox{
+        display:none !important;
+    }
+
+    #referenceNumber{
+        display:none !important;
+    }
+
+    #paymentScreenshot{
+        display:none !important;
+    }
+}
+/* MOBILE ONLY */
+@media (max-width: 768px){
+
+    #qrBox{
+
+        display: none !important;
+    }
+
+    #paymentScreenshot{
+
+        display: none !important;
+    }
+
+    .gcash-text{
+
+        display: none !important;
+    }
+}
