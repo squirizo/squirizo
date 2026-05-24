@@ -104,7 +104,7 @@
                     <p class="gcash-text">
                         Send Payment to<br>
                         <strong>0976 135 0558</strong><br>
-                        Mc JohnRay Montejo Ortiz
+                        Angelyn Ducalang
                     </p>
                 </div>
 
@@ -114,9 +114,16 @@
                 <input type="file" id="paymentScreenshot" accept="image/*">
             </div>
 
-            <a id="gcashMobileLink" href="gcash://" style="display:none; text-decoration:none;">
-                <button class="submit-order-btn" style="width:100%;" onclick="submitOrder()">Confirm Order & Pay</button>
-            </a>
+            <div id="mobileGcashContainer" style="display:none; margin-top:15px; text-align:center;">
+                <p class="gcash-text" style="color:#007dfe; font-size:14px; margin-bottom:10px; font-weight:bold;">
+                    Send Payment to:<br>
+                    0976 135 0558<br>
+                    Angelyn Ducalang
+                </p>
+                <a id="gcashMobileLink" href="gcash://" style="text-decoration:none;">
+                    <button class="submit-order-btn" style="width:100%;" onclick="submitOrder()">Confirm Order & Pay</button>
+                </a>
+            </div>
             
             <button id="normalSubmitBtn" class="submit-order-btn" onclick="payAndSubmit()">Confirm Order</button>
         </div>
@@ -186,6 +193,7 @@ function showGcashField(){
     let qrBox = document.getElementById("qrBox");
     
     let normalBtn = document.getElementById("normalSubmitBtn");
+    let mobileGcashContainer = document.getElementById("mobileGcashContainer");
     let gcashLinkWrapper = document.getElementById("gcashMobileLink");
 
     if(payment === "GCash"){
@@ -201,19 +209,20 @@ function showGcashField(){
             } else {
                 gcashLinkWrapper.href = "gcash://";
             }
+            // Itatago ang lumang static button, ilalabas ang panel na may reminder at direct hyperlink element
             normalBtn.style.display = "none";
-            gcashLinkWrapper.style.display = "block";
+            mobileGcashContainer.style.display = "block";
         }
     }else{
         gcashField.style.display = "none";
         qrBox.style.display = "none";
         normalBtn.style.display = "block";
-        gcashLinkWrapper.style.display = "none";
+        mobileGcashContainer.style.display = "none";
     }
 }
 
 // ========================================================
-// SUBMIT ORDER DATA (WALA NANG ORDER SUCCESS ALERT / RESET)
+// SUBMIT ORDER DATA (SILENT PROCESSING/NO CLEANUP)
 // ========================================================
 async function submitOrder(){
     let customerName = document.getElementById("customerName").value.trim();
@@ -224,7 +233,6 @@ async function submitOrder(){
     let referenceNumber = document.getElementById("referenceNumber").value.trim();
     let paymentScreenshot = document.getElementById("paymentScreenshot").files[0];
 
-    // VALIDATION BAGO LUMIPAT
     if(customerName === "" || customerContact === "" || address === "" || paymentMethod === ""){
         alert("Please fill up all fields!");
         return;
@@ -255,8 +263,6 @@ Total: ₱${total}`
     }
 
     try{
-        // Tahimik lang itong magse-send sa Web3Forms sa background.
-        // WALANG lilitaw na "Order Successful" at HINDI mabubura ang nakasulat sa form mo.
         fetch("https://api.web3forms.com/submit", {
             method: "POST",
             body: formData
@@ -270,12 +276,11 @@ function toggleMenu(){
     document.querySelector("nav").classList.toggle("active");
 }
 
-// Para sa Cash on Delivery na walang app link
+// Para sa Cash on Delivery
 function payAndSubmit(){
     submitOrder();
     alert("Order Submitted Successfully! ❤️");
     
-    // I-reset lang ang form kung Cash on Delivery ang pinili
     orders.squirizo = 0;
     orders.spicy = 0;
     total = 0;
