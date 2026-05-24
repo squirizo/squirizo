@@ -270,13 +270,23 @@ onclick="openOrderForm()">
     id="gcashNumber"
     placeholder="Enter GCash Number">
 
-    <div id="qrBox" style="display:none; text-align:center; margin-top:15px;">
+   <div id="qrBox"
+class="desktop-only"
+style="display:none; text-align:center; margin-top:15px;">
 
         <p>
             Scan QR Code to Pay
         </p>
 
         <img src="qrcode_gcash.jpeg">
+
+        <button
+class="gcash-btn mobile-only"
+onclick="openGcash()">
+
+    Open GCash
+
+</button>
 
         <p class="gcash-text">
     Send Payment to<br>
@@ -441,7 +451,6 @@ function closeOrderForm(){
 // =========================
 // SHOW GCASH FIELD
 // =========================
-
 function showGcashField(){
 
     let payment =
@@ -456,13 +465,27 @@ function showGcashField(){
     document.getElementById(
     "qrBox");
 
+    const isMobile =
+    /Android|iPhone|iPad|iPod/i
+    .test(navigator.userAgent);
+
     if(payment === "GCash"){
 
         gcashField.style.display =
         "block";
 
-        qrBox.style.display =
-        "block";
+        // DESKTOP ONLY QR
+
+        if(isMobile){
+
+            qrBox.style.display =
+            "none";
+
+        }else{
+
+            qrBox.style.display =
+            "block";
+        }
 
     }else{
 
@@ -473,7 +496,6 @@ function showGcashField(){
         "none";
     }
 }
-
 // =========================
 // SUBMIT ORDER
 // =========================
@@ -500,6 +522,13 @@ async function submitOrder(){
     document.getElementById(
     "gcashNumber").value.trim();
 
+    let referenceNumber =
+document.getElementById(
+"referenceNumber").value.trim();
+
+let paymentScreenshot =
+document.getElementById(
+"paymentScreenshot").files[0];
     // =========================
     // VALIDATION
     // =========================
@@ -737,13 +766,6 @@ function openGcash(){
     "gcash://send-money/639761350558";
 }
 
-let referenceNumber =
-document.getElementById(
-"referenceNumber").value.trim();
-
-let paymentScreenshot =
-document.getElementById(
-"paymentScreenshot").files[0];
 </script>
 
   
