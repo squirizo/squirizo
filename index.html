@@ -307,7 +307,9 @@ let orders = {
     spicy: 0
 };
 
+// =========================
 // ADD ITEM
+// =========================
 
 function addItem(item, price){
 
@@ -318,7 +320,9 @@ function addItem(item, price){
     updateOrders();
 }
 
+// =========================
 // MINUS ITEM
+// =========================
 
 function minusItem(item, price){
 
@@ -332,7 +336,9 @@ function minusItem(item, price){
     }
 }
 
+// =========================
 // UPDATE ORDERS
+// =========================
 
 function updateOrders(){
 
@@ -341,6 +347,8 @@ function updateOrders(){
 
     orderList.innerHTML = "";
 
+    // COUNTS
+
     document.getElementById(
     "squirizo-count").innerHTML =
     orders.squirizo;
@@ -348,6 +356,8 @@ function updateOrders(){
     document.getElementById(
     "spicy-count").innerHTML =
     orders.spicy;
+
+    // ORIGINAL
 
     if(orders.squirizo > 0){
 
@@ -361,6 +371,8 @@ function updateOrders(){
         orderList.appendChild(li);
     }
 
+    // SPICY
+
     if(orders.spicy > 0){
 
         const li =
@@ -373,34 +385,45 @@ function updateOrders(){
         orderList.appendChild(li);
     }
 
+    // TOTAL
+
     document.getElementById("total")
     .innerHTML =
     `Total: ₱${total}`;
 }
 
-// OPEN FORM
+// =========================
+// OPEN ORDER FORM
+// =========================
 
 function openOrderForm(){
 
     if(total === 0){
 
         alert("Please order first!");
+
         return;
     }
 
     document.getElementById(
-    "orderModal").style.display = "flex";
+    "orderModal").style.display =
+    "flex";
 }
 
-// CLOSE FORM
+// =========================
+// CLOSE ORDER FORM
+// =========================
 
 function closeOrderForm(){
 
     document.getElementById(
-    "orderModal").style.display = "none";
+    "orderModal").style.display =
+    "none";
 }
 
-// SHOW GCASH
+// =========================
+// SHOW GCASH FIELD
+// =========================
 
 function showGcashField(){
 
@@ -412,19 +435,49 @@ function showGcashField(){
     document.getElementById(
     "gcashField");
 
+    let qrBox =
+    document.getElementById(
+    "qrBox");
+
+    // CHECK IF MOBILE
+
+    const isMobile =
+    /Android|iPhone|iPad|iPod/i
+    .test(navigator.userAgent);
+
     if(payment === "GCash"){
 
         gcashField.style.display =
         "block";
 
+        // MOBILE = NO QR
+
+        if(isMobile){
+
+            qrBox.style.display =
+            "none";
+
+        }else{
+
+            // DESKTOP = SHOW QR
+
+            qrBox.style.display =
+            "block";
+        }
+
     }else{
 
         gcashField.style.display =
         "none";
+
+        qrBox.style.display =
+        "none";
     }
 }
 
+// =========================
 // SUBMIT ORDER
+// =========================
 
 async function submitOrder(){
 
@@ -448,7 +501,9 @@ async function submitOrder(){
     document.getElementById(
     "gcashNumber").value.trim();
 
+    // =========================
     // VALIDATION
+    // =========================
 
     if(
         customerName === "" ||
@@ -458,6 +513,7 @@ async function submitOrder(){
     ){
 
         alert("Please fill up all fields!");
+
         return;
     }
 
@@ -477,10 +533,10 @@ async function submitOrder(){
 
     // ADDRESS VALIDATION
 
-    if(address.length < 15){
+    if(address.length < 10){
 
         alert(
-        "Please enter complete delivery address!"
+        "Please enter complete address!"
         );
 
         return;
@@ -488,20 +544,25 @@ async function submitOrder(){
 
     // GCASH VALIDATION
 
-   if(paymentMethod === "GCash"){
+    if(paymentMethod === "GCash"){
 
-    if(gcashNumber === ""){
+        if(gcashNumber === ""){
 
-        alert("Please enter GCash number!");
-        return;
+            alert(
+            "Please enter GCash number!"
+            );
+
+            return;
+        }
+
+    }else{
+
+        gcashNumber = "N/A";
     }
 
-}else{
-
-    gcashNumber = "N/A";
-}
-
-    // ORDER TEXT
+    // =========================
+    // ORDER DETAILS
+    // =========================
 
     let ordersText = "";
 
@@ -517,7 +578,9 @@ async function submitOrder(){
         `SQUIRIZO SPICY x ${orders.spicy}\n`;
     }
 
-    // FORM DATA
+    // =========================
+    // SEND TO WEB3FORMS
+    // =========================
 
     const formData = new FormData();
 
@@ -534,11 +597,6 @@ async function submitOrder(){
     formData.append(
     "subject",
     "New SQUIRIZO Order"
-    );
-
-    formData.append(
-    "from_name",
-    "SQUIRIZO Website"
     );
 
     formData.append(
@@ -576,8 +634,8 @@ Total:
         {
 
             method: "POST",
-            body: formData
 
+            body: formData
         });
 
         const result =
@@ -591,41 +649,32 @@ Total:
             "Order Successful ❤️"
             );
 
-            // OPEN GCASH
+            // =========================
+            // GCASH PAYMENT
+            // =========================
 
-           if(paymentMethod === "GCash"){
+            if(paymentMethod === "GCash"){
 
-    // CHECK IF MOBILE
+                const isMobile =
+                /Android|iPhone|iPad|iPod/i
+                .test(navigator.userAgent);
 
-    const isMobile =
-    /Android|iPhone|iPad|iPod/i
-    .test(navigator.userAgent);
+                // MOBILE
 
-    if(isMobile){
+                if(isMobile){
 
-        // OPEN GCASH APP
+                    window.location.href =
+                    "gcash://send-money/639761350558";
+                }
+            }
 
-        window.location.href =
-        "gcash://send-money/639761350558";
-
-    }else{
-
-        // SHOW QR CODE FOR DESKTOP
-
-        alert(
-        "Please scan the GCash QR Code to complete your payment."
-        );
-
-        document.getElementById(
-        "qrBox").style.display =
-        "block";
-    }
-}
-
+            // =========================
             // RESET
+            // =========================
 
             orders.squirizo = 0;
             orders.spicy = 0;
+
             total = 0;
 
             updateOrders();
@@ -666,40 +715,16 @@ Total:
     }
 }
 
+// =========================
+// MOBILE MENU
+// =========================
 
+function toggleMenu(){
 
-
-function showGcashField(){
-
-    let payment =
-    document.getElementById(
-    "paymentMethod").value;
-
-    let gcashField =
-    document.getElementById(
-    "gcashField");
-
-    let qrBox =
-    document.getElementById(
-    "qrBox");
-
-    if(payment === "GCash"){
-
-        gcashField.style.display =
-        "block";
-
-        qrBox.style.display =
-        "block";
-
-    }else{
-
-        gcashField.style.display =
-        "none";
-
-        qrBox.style.display =
-        "none";
-    }
+    document.querySelector("nav")
+    .classList.toggle("active");
 }
+
 </script>
 
   
