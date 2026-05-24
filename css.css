@@ -1237,3 +1237,17 @@ MOBILE RESPONSIVE
         display: none !important;
     }
 }
+
+.gcash-btn{
+
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background: #007dff;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+}
