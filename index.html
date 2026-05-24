@@ -459,39 +459,37 @@ async function submitOrder(){
 
     // SEND EMAIL
 
-    const response = await fetch(
-    "https://api.web3forms.com/submit",
-    {
+  const response = await fetch(
+"https://api.web3forms.com/submit",
+{
+    method: "POST",
 
-        method: "POST",
+    headers: {
+        "Content-Type":
+        "application/json"
+    },
 
-        headers: {
-            "Content-Type":
-            "application/json"
-        },
+    body: JSON.stringify({
 
-   body: JSON.stringify({
+        access_key:
+        "c8317cf4-ff2e-4c55-84c0-61aaeecdaff7",
 
-    access_key:
-    "c8317cf4-ff2e-4c55-84c0-61aaeecdaff7",
+        subject:
+        "New SQUIRIZO Order",
 
-    subject:
-    "New SQUIRIZO Order",
+        from_name:
+        "SQUIRIZO Website",
 
-    from_name:
-    "SQUIRIZO Website",
+        name:
+        customerName,
 
-    name:
-    customerName,
+        email:
+        customerEmail,
 
-    email:
-customerEmail,
+        reply_to:
+        customerEmail,
 
-reply_to:
-customerEmail,
-
-    message:
-
+        message:
 `NEW ORDER
 
 Customer:
@@ -518,15 +516,13 @@ Total:
 Send Payment To:
 09761350558
 Mc JohnRay Montejo Ortiz`
+    })
+});
 
-})
+const result =
+await response.json();
 
-    });
-
-    const result =
-    await response.json();
-    
-    console.log(result);
+console.log(result);
 
     if(result.success){
 
