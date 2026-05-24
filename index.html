@@ -470,24 +470,27 @@ async function submitOrder(){
             "application/json"
         },
 
-        body: JSON.stringify({
+   body: JSON.stringify({
 
-            access_key:
-            "c8317cf4-ff2e-4c55-84c0-61aaeecdaff7",
+    access_key:
+    "c8317cf4-ff2e-4c55-84c0-61aaeecdaff7",
 
-            subject:
-            "New SQUIRIZO Order",
+    subject:
+    "New SQUIRIZO Order",
 
-            from_name:
-            "SQUIRIZO Website",
+    from_name:
+    "SQUIRIZO Website",
 
-            name:
-            customerName,
+    name:
+    customerName,
 
-            email:
-            customerEmail,
+    email:
+    customerEmail,
 
-            message:
+    replyto:
+    customerEmail,
+
+    message:
 
 `NEW ORDER
 
@@ -516,13 +519,14 @@ Send Payment To:
 09761350558
 Mc JohnRay Montejo Ortiz`
 
-
-        })
+})
 
     });
 
     const result =
     await response.json();
+    
+    console.log(result);
 
     if(result.success){
 
