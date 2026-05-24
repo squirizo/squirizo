@@ -744,21 +744,19 @@ function payAndSubmit(){
 
         // MOBILE
 
-        if(isMobile){
+      if(isMobile){
 
-            // OPEN GCASH APP
+    window.open(
+    "https://m.gcash.com",
+    "_blank"
+    );
 
-            window.location.href =
-            "https://www.gcash.com";
+    setTimeout(() => {
 
-            // OPTIONAL:
-            // SEND ORDER AFTER 3 SECONDS
+        submitOrder();
 
-            setTimeout(() => {
-
-                submitOrder();
-
-            }, 3000);
+    }, 3000);
+}
 
         }else{
 
