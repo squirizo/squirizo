@@ -721,16 +721,23 @@ paymentScreenshot
 // MOBILE MENU
 // =========================
 
+// =========================
+// MOBILE MENU
+// =========================
+
 function toggleMenu(){
 
     document.querySelector("nav")
     .classList.toggle("active");
 }
 
+// =========================
+// OPEN GCASH APP
+// =========================
+
 function openGcashApp(){
 
-    window.location.href =
-    "gcash://";
+    window.location.href = "gcash://";
 
     setTimeout(() => {
 
@@ -740,14 +747,19 @@ function openGcashApp(){
         );
 
     }, 1500);
+}
 
-    async function payAndSubmit(){
+// =========================
+// PAY + SUBMIT ORDER
+// =========================
+
+function payAndSubmit(){
 
     let paymentMethod =
     document.getElementById(
     "paymentMethod").value;
 
-    // OPEN GCASH FIRST
+    // IF GCASH
 
     if(paymentMethod === "GCash"){
 
@@ -755,7 +767,11 @@ function openGcashApp(){
         /Android|iPhone|iPad|iPod/i
         .test(navigator.userAgent);
 
+        // MOBILE
+
         if(isMobile){
+
+            // OPEN GCASH APP
 
             window.location.href =
             "gcash://";
@@ -769,7 +785,7 @@ function openGcashApp(){
 
             }, 3000);
 
-        }else{
+              }else{
 
             // DESKTOP
 
@@ -778,15 +794,11 @@ function openGcashApp(){
 
     }else{
 
-        // COD
+        // CASH ON DELIVERY
 
         submitOrder();
     }
 }
-
-
-}
-
 </script>
 
   
