@@ -496,6 +496,9 @@ header h1{
     id="reviewText"
     placeholder="Write your review here..."
     rows="5"></textarea>
+    <input type="file"
+id="reviewImage"
+accept="image/*">
 
     <button onclick="addReview()">
 
@@ -513,8 +516,6 @@ id="reviewsContainer">
 </div>
 
 <script>
-
-// LOAD SAVED REVIEWS
 
 window.onload = function(){
 
@@ -537,6 +538,13 @@ function addReview(){
     document.getElementById(
     "reviewText").value;
 
+    let imageInput =
+    document.getElementById(
+    "reviewImage");
+
+    let file =
+    imageInput.files[0];
+
     // VALIDATION
 
     if(name === "" ||
@@ -548,33 +556,65 @@ function addReview(){
         return;
     }
 
-    // REVIEW OBJECT
+    // IF MAY IMAGE
+
+    if(file){
+
+        let reader = new FileReader();
+
+        reader.onload = function(e){
+
+            saveReview(
+                name,
+                rating,
+                text,
+                e.target.result
+            );
+        };
+
+        reader.readAsDataURL(file);
+
+    }else{
+
+        saveReview(
+            name,
+            rating,
+            text,
+            ""
+        );
+    }
+}
+
+// SAVE REVIEW
+
+function saveReview(
+    name,
+    rating,
+    text,
+    image
+){
 
     let review = {
 
         name:name,
         rating:rating,
-        text:text
+        text:text,
+        image:image
     };
 
-    // GET OLD REVIEWS
-
     let reviews =
-    JSON.parse(localStorage.getItem("reviews"))
+    JSON.parse(
+    localStorage.getItem("reviews"))
     || [];
 
-    // ADD NEW REVIEW
-
     reviews.push(review);
-
-    // SAVE
 
     localStorage.setItem(
     "reviews",
     JSON.stringify(reviews)
     );
 
-    // CLEAR FORM
+    // CLEAR
 
     document.getElementById(
     "reviewName").value = "";
@@ -585,7 +625,8 @@ function addReview(){
     document.getElementById(
     "reviewText").value = "";
 
-    // REFRESH DISPLAY
+    document.getElementById(
+    "reviewImage").value = "";
 
     displayReviews();
 }
@@ -595,7 +636,8 @@ function addReview(){
 function displayReviews(){
 
     let reviews =
-    JSON.parse(localStorage.getItem("reviews"))
+    JSON.parse(
+    localStorage.getItem("reviews"))
     || [];
 
     let container =
@@ -607,7 +649,8 @@ function displayReviews(){
     reviews.reverse().forEach(function(review){
 
         let firstLetter =
-        review.name.charAt(0).toUpperCase();
+        review.name.charAt(0)
+        .toUpperCase();
 
         container.innerHTML += `
 
@@ -635,13 +678,25 @@ function displayReviews(){
                     ${review.text}
                 </div>
 
+                ${
+                    review.image
+                    ?
+
+                    `<img src="${review.image}"
+                    class="review-image">`
+
+                    :
+
+                    ""
+                }
+
             </div>
 
         </div>
-
         `;
     });
 }
+
 // STAR RATING
 
 function setRating(rating){
