@@ -901,3 +901,18 @@ MOBILE RESPONSIVE
 
     font-weight:bold;
 }
+
+.review-image{
+
+    width:100%;
+
+    max-width:250px;
+
+    margin-top:15px;
+
+    border-radius:15px;
+
+    box-shadow:0 5px 15px rgba(0,0,0,0.15);
+
+    object-fit:cover;
+}
