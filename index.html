@@ -313,11 +313,8 @@ onclick="payAndSubmit()">
 </div>
 
 <script>
-
 let total = 0;
-
 let orders = {
-
     squirizo: 0,
     spicy: 0
 };
@@ -325,28 +322,19 @@ let orders = {
 // =========================
 // ADD ITEM
 // =========================
-
 function addItem(item, price){
-
     orders[item]++;
-
     total += price;
-
     updateOrders();
 }
 
 // =========================
 // MINUS ITEM
 // =========================
-
 function minusItem(item, price){
-
     if(orders[item] > 0){
-
         orders[item]--;
-
         total -= price;
-
         updateOrders();
     }
 }
@@ -354,258 +342,128 @@ function minusItem(item, price){
 // =========================
 // UPDATE ORDERS
 // =========================
-
 function updateOrders(){
-
-    const orderList =
-    document.getElementById("order-list");
-
+    const orderList = document.getElementById("order-list");
     orderList.innerHTML = "";
 
     // COUNTS
-
-    document.getElementById(
-    "squirizo-count").innerHTML =
-    orders.squirizo;
-
-    document.getElementById(
-    "spicy-count").innerHTML =
-    orders.spicy;
+    document.getElementById("squirizo-count").innerHTML = orders.squirizo;
+    document.getElementById("spicy-count").innerHTML = orders.spicy;
 
     // ORIGINAL
-
     if(orders.squirizo > 0){
-
-        const li =
-        document.createElement("li");
-
-        li.innerHTML =
-        `SQUIRIZO x ${orders.squirizo}
-        = ₱${orders.squirizo * 50}`;
-
+        const li = document.createElement("li");
+        li.innerHTML = `SQUIRIZO x ${orders.squirizo} = ₱${orders.squirizo * 50}`;
         orderList.appendChild(li);
     }
 
     // SPICY
-
     if(orders.spicy > 0){
-
-        const li =
-        document.createElement("li");
-
-        li.innerHTML =
-        `SQUIRIZO SPICY x ${orders.spicy}
-        = ₱${orders.spicy * 55}`;
-
+        const li = document.createElement("li");
+        li.innerHTML = `SQUIRIZO SPICY x ${orders.spicy} = ₱${orders.spicy * 55}`;
         orderList.appendChild(li);
     }
 
     // TOTAL
-
-    document.getElementById("total")
-    .innerHTML =
-    `Total: ₱${total}`;
+    document.getElementById("total").innerHTML = `Total: ₱${total}`;
 }
 
 // =========================
 // OPEN ORDER FORM
 // =========================
-
 function openOrderForm(){
-
     if(total === 0){
-
         alert("Please order first!");
-
         return;
     }
-
-    document.getElementById(
-    "orderModal").style.display =
-    "flex";
+    document.getElementById("orderModal").style.display = "flex";
 }
 
 // =========================
 // CLOSE ORDER FORM
 // =========================
-
 function closeOrderForm(){
-
-    document.getElementById(
-    "orderModal").style.display =
-    "none";
+    document.getElementById("orderModal").style.display = "none";
 }
 
 // =========================
 // SHOW GCASH FIELD
 // =========================
-
 function showGcashField(){
-
-    let payment =
-    document.getElementById(
-    "paymentMethod").value;
-
-    let gcashField =
-    document.getElementById(
-    "gcashField");
-
-    let qrBox =
-    document.getElementById(
-    "qrBox");
+    let payment = document.getElementById("paymentMethod").value;
+    let gcashField = document.getElementById("gcashField");
+    let qrBox = document.getElementById("qrBox");
 
     if(payment === "GCash"){
-
-        gcashField.style.display =
-        "block";
-
-        qrBox.style.display =
-        "block";
-
-    }else{
-
-        gcashField.style.display =
-        "none";
-
-        qrBox.style.display =
-        "none";
+        gcashField.style.display = "block";
+        qrBox.style.display = "block";
+    } else {
+        gcashField.style.display = "none";
+        qrBox.style.display = "none";
     }
 }
 
 // =========================
-// SUBMIT ORDER
+// SUBMIT ORDER (RETURNS TRUE/FALSE)
 // =========================
-
 async function submitOrder(){
+    let customerName = document.getElementById("customerName").value.trim();
+    let customerContact = document.getElementById("customerContact").value.trim();
+    let address = document.getElementById("customerAddress").value.trim();
+    let paymentMethod = document.getElementById("paymentMethod").value;
+    let gcashNumber = document.getElementById("gcashNumber").value.trim();
+    let referenceNumber = document.getElementById("referenceNumber").value.trim();
+    let paymentScreenshot = document.getElementById("paymentScreenshot").files[0];
 
-    let customerName =
-    document.getElementById(
-    "customerName").value.trim();
-
-    let customerContact =
-    document.getElementById(
-    "customerContact").value.trim();
-
-    let address =
-    document.getElementById(
-    "customerAddress").value.trim();
-
-    let paymentMethod =
-    document.getElementById(
-    "paymentMethod").value;
-
-    let gcashNumber =
-    document.getElementById(
-    "gcashNumber").value.trim();
-
-    let referenceNumber =
-document.getElementById(
-"referenceNumber").value.trim();
-
-let paymentScreenshot =
-document.getElementById(
-"paymentScreenshot").files[0];
     // =========================
     // VALIDATION
     // =========================
-
-    if(
-        customerName === "" ||
-        customerContact === "" ||
-        address === "" ||
-        paymentMethod === ""
-    ){
-
+    if(customerName === "" || customerContact === "" || address === "" || paymentMethod === ""){
         alert("Please fill up all fields!");
-
-        return;
+        return false;
     }
 
     // CONTACT VALIDATION
-
-    if(
-        customerContact.length !== 11 ||
-        !customerContact.startsWith("09")
-    ){
-
-        alert(
-        "Contact number must be 11 digits and start with 09"
-        );
-
-        return;
+    if(customerContact.length !== 11 || !customerContact.startsWith("09")){
+        alert("Contact number must be 11 digits and start with 09");
+        return false;
     }
 
     // ADDRESS VALIDATION
-
     if(address.length < 10){
-
-        alert(
-        "Please enter complete address!"
-        );
-
-        return;
+        alert("Please enter complete address!");
+        return false;
     }
 
     // GCASH VALIDATION
-
     if(paymentMethod === "GCash"){
-
         if(gcashNumber === ""){
-
-            alert(
-            "Please enter GCash number!"
-            );
-
-            return;
+            alert("Please enter GCash number!");
+            return false;
         }
-
-    }else{
-
+    } else {
         gcashNumber = "N/A";
     }
 
     // =========================
     // ORDER DETAILS
     // =========================
-
     let ordersText = "";
-
     if(orders.squirizo > 0){
-
-        ordersText +=
-        `SQUIRIZO x ${orders.squirizo}\n`;
+        ordersText += `SQUIRIZO x ${orders.squirizo}\n`;
     }
-
     if(orders.spicy > 0){
-
-        ordersText +=
-        `SQUIRIZO SPICY x ${orders.spicy}\n`;
+        ordersText += `SQUIRIZO SPICY x ${orders.spicy}\n`;
     }
 
     // =========================
     // SEND TO WEB3FORMS
     // =========================
-
     const formData = new FormData();
-
-    formData.append(
-    "access_key",
-    "c8317cf4-ff2e-4c55-84c0-61aaecedaff7"
-    );
-
-    formData.append(
-    "name",
-    customerName
-    );
-
-    formData.append(
-    "subject",
-    "New SQUIRIZO Order"
-    );
-
-  formData.append(
-"message",
-
+    formData.append("access_key", "c8317cf4-ff2e-4c55-84c0-61aaecedaff7");
+    formData.append("name", customerName);
+    formData.append("subject", "New SQUIRIZO Order");
+    formData.append("message", 
 `NEW ORDER
 
 Customer:
@@ -631,151 +489,83 @@ ${referenceNumber}
 
 Total:
 ₱${total}`
-);
-if(paymentScreenshot){
-
-    formData.append(
-    "attachment",
-    paymentScreenshot
     );
-}
-    try{
 
-        const response =
-        await fetch(
-        "https://api.web3forms.com/submit",
-        {
+    if(paymentScreenshot){
+        formData.append("attachment", paymentScreenshot);
+    }
 
+    try {
+        const response = await fetch("https://api.web3forms.com/submit", {
             method: "POST",
-
             body: formData
         });
 
-        const result =
-        await response.json();
-
-        console.log(result);
+        const result = await response.json();
 
         if(result.success){
+            alert("Order Details Submitted Successfully ❤️");
 
-            alert(
-            "Order Successful ❤️"
-            );
-
-            // =========================
-            // GCASH PAYMENT
-            // =========================
-
-
-            // =========================
-            // RESET
-            // =========================
-
+            // RESET FORM
             orders.squirizo = 0;
             orders.spicy = 0;
-
             total = 0;
-
             updateOrders();
 
-            document.getElementById(
-            "customerName").value = "";
-
-            document.getElementById(
-            "customerContact").value = "";
-
-            document.getElementById(
-            "customerAddress").value = "";
-
-            document.getElementById(
-            "paymentMethod").value = "";
-
-            document.getElementById(
-            "gcashNumber").value = "";
+            document.getElementById("customerName").value = "";
+            document.getElementById("customerContact").value = "";
+            document.getElementById("customerAddress").value = "";
+            document.getElementById("paymentMethod").value = "";
+            document.getElementById("gcashNumber").value = "";
+            document.getElementById("referenceNumber").value = "";
+            document.getElementById("paymentScreenshot").value = "";
 
             closeOrderForm();
-
-        }else{
-
-            alert(
-            "Failed to send order ❌"
-            );
-
-            console.log(result);
+            return true; // Return true so payAndSubmit knows it succeeded
+        } else {
+            alert("Failed to send order ❌");
+            return false;
         }
-
-    }catch(error){
-
-        console.log(error);
-
-        alert(
-        "Something went wrong ❌"
-        );
+    } catch(error) {
+        console.error(error);
+        alert("Something went wrong ❌");
+        return false;
     }
 }
 
 // =========================
 // MOBILE MENU
 // =========================
-
 function toggleMenu(){
-
-    document.querySelector("nav")
-    .classList.toggle("active");
+    document.querySelector("nav").classList.toggle("active");
 }
 
 // =========================
-// PAY + SUBMIT ORDER
+// PAY + SUBMIT ORDER (FIXED)
 // =========================
+async function payAndSubmit(){
+    let paymentMethod = document.getElementById("paymentMethod").value;
 
-function payAndSubmit(){
+    // 1. Submit the order data first so you don't lose the customer information!
+    let isSubmitted = await submitOrder();
+    
+    // 2. If submission failed or fields are missing, stop here.
+    if(!isSubmitted) return;
 
-    let paymentMethod =
-    document.getElementById(
-    "paymentMethod").value;
-
-    // IF GCASH
-
+    // 3. If it's GCash, handle app redirection safely *after* successful data submission
     if(paymentMethod === "GCash"){
-
-        const isMobile =
-        /Android|iPhone|iPad|iPod/i
-        .test(navigator.userAgent);
-
-        // MOBILE
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
         if(isMobile){
-
-            // OPEN GCASH APP
-
-            window.location.href =
-            "https://www.gcash.com";
-
-            // OPTIONAL:
-            // SEND ORDER AFTER 3 SECONDS
-
+            // Attempting deep-link to trigger native app
+            // If the deep link fails, it fallbacks gracefully to standard GCash portal link
             setTimeout(() => {
-
-                submitOrder();
-
-            }, 3000);
-
-        }else{
-
-            // DESKTOP
-
-            alert(
-            "Open this on mobile to launch GCash App"
-            );
-
-            submitOrder();
+                window.location.href = "gcash://";
+            }, 500);
+            
+            // Second fallback safety link
+            window.location.href = "com.globe.gcash://"; 
         }
-
-    }else{
-
-        // CASH ON DELIVERY
-
-        submitOrder();
     }
 }
 </script>
