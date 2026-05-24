@@ -306,7 +306,7 @@ Open GCash App
 <!-- CONFIRM BUTTON -->
  
 <button class="submit-order-btn"
-onclick="submitOrder()">
+onclick="payAndSubmit()">
 
     Confirm Order
 
@@ -668,20 +668,7 @@ paymentScreenshot
             // =========================
             // GCASH PAYMENT
             // =========================
-if(paymentMethod === "GCash"){
 
-    const isMobile =
-    /Android|iPhone|iPad|iPod/i
-    .test(navigator.userAgent);
-
-    if(isMobile){
-
-        window.open(
-        "https://www.gcash.com/",
-        "_blank"
-        );
-    }
-}
 
             // =========================
             // RESET
@@ -753,6 +740,49 @@ function openGcashApp(){
         );
 
     }, 1500);
+
+    async function payAndSubmit(){
+
+    let paymentMethod =
+    document.getElementById(
+    "paymentMethod").value;
+
+    // OPEN GCASH FIRST
+
+    if(paymentMethod === "GCash"){
+
+        const isMobile =
+        /Android|iPhone|iPad|iPod/i
+        .test(navigator.userAgent);
+
+        if(isMobile){
+
+            window.location.href =
+            "gcash://";
+
+            // WAIT 3 SECONDS
+            // THEN SEND ORDER
+
+            setTimeout(() => {
+
+                submitOrder();
+
+            }, 3000);
+
+        }else{
+
+            // DESKTOP
+
+            submitOrder();
+        }
+
+    }else{
+
+        // COD
+
+        submitOrder();
+    }
+}
 
 
 }
