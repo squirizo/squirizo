@@ -630,9 +630,21 @@ Total:
 
         if(paymentMethod === "GCash"){
 
-            alert(
-            "Please send your payment to:\n\n09761350558\nMc JohnRay Montejo Ortiz"
-            );
+           // SUCCESS
+
+alert(
+"Order Successful ❤️"
+);
+
+if(paymentMethod === "GCash"){
+
+    alert("Redirecting to GCash Payment...");
+
+    window.open(
+    "https://gcash.app.link/send?mobile=639761350558",
+    "_blank"
+    );
+}
         }
 
         // RESET
