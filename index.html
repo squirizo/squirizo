@@ -635,12 +635,15 @@ Total:
 alert(
 "Order Successful ❤️"
 );
-if(paymentMethod === "GCash"){
 
-    alert("Opening GCash App...");
+if(paymentMethod === "GCash"){
 
     window.location.href =
     "gcash://send-money/639761350558";
+
+}else{
+
+    alert("Order Successful ❤️");
 }
         }
 
