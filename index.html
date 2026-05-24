@@ -114,10 +114,11 @@
                 <input type="file" id="paymentScreenshot" accept="image/*">
             </div>
 
-            <a id="gcashMobileLink" href="gcash://" style="display:none; text-decoration:none; margin-top:15px;">
-                <div style="color:#007dfe; font-size:14px; margin-bottom:10px; font-weight:bold; text-align:center;">
-                    Send Payment to: 0976 135 0558 (Angelyn Ducalang)
-                </div>
+            <div id="mobilePaymentReminder" style="display:none; color:#007dfe; font-size:15px; margin-top:15px; margin-bottom:10px; font-weight:bold; text-align:center;">
+                Send Payment to: 0976 135 0558 (Angelyn Ducalang)
+            </div>
+
+            <a id="gcashMobileLink" href="gcash://" style="display:none; text-decoration:none;">
                 <button class="submit-order-btn" style="width:100%;" onclick="submitOrder()">Confirm Order & Pay</button>
             </a>
             
@@ -190,6 +191,7 @@ function showGcashField(){
     
     let normalBtn = document.getElementById("normalSubmitBtn");
     let gcashLinkWrapper = document.getElementById("gcashMobileLink");
+    let mobileReminder = document.getElementById("mobilePaymentReminder");
 
     if(payment === "GCash"){
         gcashField.style.display = "block";
@@ -204,14 +206,16 @@ function showGcashField(){
             } else {
                 gcashLinkWrapper.href = "gcash://";
             }
-            // I-on natin ang display para lumabas ang text at button nang sabay sa mobile browser
+            // Itatago ang lumang static button, sabay na i-o-on ang text panel at direct application launcher button
             normalBtn.style.display = "none";
+            mobileReminder.style.display = "block";
             gcashLinkWrapper.style.display = "block";
         }
     }else{
         gcashField.style.display = "none";
         qrBox.style.display = "none";
         normalBtn.style.display = "block";
+        mobileReminder.style.display = "none";
         gcashLinkWrapper.style.display = "none";
     }
 }
