@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>SQUIRIZO Reviews</title>
     <style>
-        /* (Idagdag mo rito 'yung magandang CSS mo dati) */
         body { font-family: sans-serif; background: #fbe4d5; padding: 20px; }
         .review-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; }
     </style>
@@ -18,11 +17,11 @@
     <button onclick="saveReview()" id="btn">Submit</button>
 </div>
 
-<div id="display"></div>
+<div id="display">Loading...</div>
 
 <script>
 // --- PALITAN MO ITO NG API URL MULA SA SHEETDB.IO ---
-const API_URL = "https://sheetdb.io/api/v1/iy22k2841p999"; 
+const API_URL = "https://sheetdb.io/api/v1/zxmdtvlmdyb9u"; 
 
 async function saveReview() {
     const btn = document.getElementById("btn");
@@ -37,28 +36,31 @@ async function saveReview() {
         imageBase64 = await new Promise(r => { let reader = new FileReader(); reader.onload = e => r(e.target.result); reader.readAsDataURL(file); });
     }
 
-    // Direct POST sa Google Sheet
-    await fetch(API_URL, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ data: [{ name, rating: "5 stars", text, image: imageBase64 }] })
-    });
-
-    btn.disabled = false; btn.innerText = "Submit";
-    location.reload();
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ data: [{ name: name, rating: "5", text: text, image: imageBase64 }] })
+        });
+        alert("Success!");
+        location.reload();
+    } catch(e) {
+        alert("Error! Check console.");
+    }
 }
 
 async function loadReviews() {
-    const res = await fetch(API_URL);
-    const data = await res.json();
-    document.getElementById("display").innerHTML = data.map(r => `
-        <div class="review-item">
-            <strong>${r.name}</strong><p>${r.text}</p>
-            ${r.image ? `<img src="${r.image}" width="100">` : ""}
-        </div>
-    `).join("");
+    try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        document.getElementById("display").innerHTML = data.map(r => `
+            <div class="review-item">
+                <strong>${r.name}</strong><p>${r.text}</p>
+                ${r.image ? `<img src="${r.image}" width="100">` : ""}
+            </div>
+        `).join("");
+    } catch(e) { document.getElementById("display").innerHTML = "No reviews yet."; }
 }
-
 loadReviews();
 </script>
 </body>
