@@ -215,11 +215,10 @@ header h1{
 </div>
 
 <script>
-// MATIBAY NA MAPAGLALAGYAN NG DATA (JSONBIN CLOUD TABLE)
-const BIN_ID = "6652433de41b4d34e4f97159"; 
-const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-// Pampublikong Master Key para diretso na ang upload mo ngayon gabi nang walang account setup
-const MASTER_KEY = "$2a$10$Y73W9MhAExZ0QvHeO1i.VexUjDkNooXqRzDqf8qTiaJd8YnE1AgiG"; 
+// GINAMITAN NG CORS TULAY / PROXY PARA HINDI HARANGIN NG BROWSER ANG SUBMISSION MO!
+const BUCKET_ID = "BYz7cfcbgzkiw4pGvGfdpg";
+const KVDB_URL = `https://kvdb.io/${BUCKET_ID}/squirizo_reviews`;
+const PROXY_URL = "https://api.allorigins.win/raw?url=" + encodeURIComponent(KVDB_URL);
 
 window.onload = function(){
     displayReviews();
@@ -277,32 +276,27 @@ async function addReview(){
 
         let reviewsList = [];
         
-        // Kumuha ng lumang records mula sa JSONBin Table
+        // Kumuha ng lumang reviews gamit ang Proxy
         try {
-            let getResponse = await fetch(API_URL, {
-                method: "GET",
-                headers: { "X-Master-Key": MASTER_KEY }
-            });
+            let getResponse = await fetch(PROXY_URL);
             if(getResponse.ok) {
-                let resData = await getResponse.json();
-                if (resData.record && Array.isArray(resData.record)) {
-                    reviewsList = resData.record;
+                let textData = await getResponse.text();
+                if (textData && textData.trim().startsWith("[")) {
+                    reviewsList = JSON.parse(textData);
                 }
             }
         } catch(e) {
             reviewsList = [];
         }
 
+        if(!Array.isArray(reviewsList)) reviewsList = [];
+
         let newReview = { name, rating: ratingStars, text, image: imageDataBase64 };
         reviewsList.unshift(newReview);
 
-        // I-save pabalik sa JSONBin Table (Matatag na PUT method)
-        let putResponse = await fetch(API_URL, {
-            method: "PUT", 
-            headers: {
-                "Content-Type": "application/json",
-                "X-Master-Key": MASTER_KEY
-            },
+        // Mag-save sa KVDB gamit ang Proxy para lampas-error agad
+        let putResponse = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(KVDB_URL), {
+            method: "POST", // Gumamit ng POST method para mag-force auto-create ng key sa KVDB
             body: JSON.stringify(reviewsList)
         });
 
@@ -318,7 +312,7 @@ async function addReview(){
             
             displayReviews();
         } else {
-            alert("Database Error. Hindi tinanggap ng storage.");
+            alert("Database Error. Failed to auto-create key.");
         }
     } catch (error) {
         console.error(error);
@@ -333,18 +327,19 @@ async function displayReviews(){
     let container = document.getElementById("reviewsContainer");
 
     try {
-        let response = await fetch(API_URL, {
-            method: "GET",
-            headers: { "X-Master-Key": MASTER_KEY }
-        });
-        
+        let response = await fetch(PROXY_URL);
         if(!response.ok) {
             container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
             return;
         }
         
-        let resData = await response.json();
-        let reviews = resData.record;
+        let textData = await response.text();
+        if(!textData || !textData.trim().startsWith("[")) {
+            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
+            return;
+        }
+
+        let reviews = JSON.parse(textData);
         container.innerHTML = "";
 
         if(!reviews || reviews.length === 0){
@@ -377,6 +372,19 @@ async function displayReviews(){
         console.error(error);
         container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
     }
+}
+
+function setRating(ratingValue){
+    document.getElementById("reviewRating").value = ratingValue;
+    let stars = document.querySelectorAll(".star-rating span");
+
+    stars.forEach((star, index) => {
+        if(index < ratingValue){
+            star.style.color = "gold";
+        }else{
+            star.style.color = "#ccc";
+        }
+    });
 }
 </script>
 
