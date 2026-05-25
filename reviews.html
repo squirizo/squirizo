@@ -3,61 +3,83 @@
 const BUCKET_ID = "BYz7cfcbgzkiw4pGvGfdpg";
 const API_URL = `https://kvdb.io/${BUCKET_ID}/squirizo_live_data`;
 
-window.onload = function(){
+window.onload = () => {
     displayReviews();
+};
+
+// STAR RATING
+function setRating(ratingValue){
+
+    document.getElementById("reviewRating").value = ratingValue;
+
+    let stars = document.querySelectorAll(".star-rating span");
+
+    stars.forEach((star, index) => {
+
+        if(index < ratingValue){
+
+            star.style.color = "gold";
+
+        }else{
+
+            star.style.color = "#ccc";
+        }
+    });
 }
 
-function compressImage(file) {
+// IMAGE COMPRESS
+function compressImage(file){
+
     return new Promise((resolve) => {
 
         const reader = new FileReader();
 
         reader.readAsDataURL(file);
 
-        reader.onload = event => {
+        reader.onload = function(event){
 
             const img = new Image();
 
             img.src = event.target.result;
 
-            img.onload = () => {
+            img.onload = function(){
 
-                const canvas = document.createElement('canvas');
+                const canvas = document.createElement("canvas");
 
                 const MAX_WIDTH = 250;
 
-                const scaleSize = MAX_WIDTH / img.width;
+                const scale = MAX_WIDTH / img.width;
 
                 canvas.width = MAX_WIDTH;
-                canvas.height = img.height * scaleSize;
 
-                const ctx = canvas.getContext('2d');
+                canvas.height = img.height * scale;
+
+                const ctx = canvas.getContext("2d");
 
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.4);
-
-                resolve(dataUrl);
+                resolve(canvas.toDataURL("image/jpeg", 0.5));
             };
         };
     });
 }
 
+// ADD REVIEW
 async function addReview(){
 
-    let name = document.getElementById("reviewName").value.trim();
+    const name = document.getElementById("reviewName").value.trim();
 
-    let ratingNum = document.getElementById("reviewRating").value;
+    const rating = document.getElementById("reviewRating").value;
 
-    let text = document.getElementById("reviewText").value.trim();
+    const text = document.getElementById("reviewText").value.trim();
 
-    let imageFile = document.getElementById("reviewImage").files[0];
+    const imageFile = document.getElementById("reviewImage").files[0];
 
-    let submitBtn = document.getElementById("submitBtn");
+    const submitBtn = document.getElementById("submitBtn");
 
-    if(name === "" || ratingNum === "" || text === ""){
+    if(name === "" || rating === "" || text === ""){
 
-        alert("Please fill up all fields and rating!");
+        alert("Please complete all fields!");
 
         return;
     }
@@ -68,50 +90,50 @@ async function addReview(){
 
     try{
 
-        let imageDataBase64 = "";
+        let reviews = [];
 
-        if(imageFile){
-
-            imageDataBase64 = await compressImage(imageFile);
-        }
-
-        let reviewsList = [];
-
-        // LOAD OLD REVIEWS
+        // LOAD OLD DATA
         try{
 
-            let response = await fetch(API_URL);
+            const response = await fetch(API_URL);
 
             if(response.ok){
 
-                let textData = await response.text();
+                const oldData = await response.text();
 
-                if(textData && textData.startsWith("[")){
+                if(oldData && oldData.startsWith("[")){
 
-                    reviewsList = JSON.parse(textData);
+                    reviews = JSON.parse(oldData);
                 }
             }
 
         }catch(err){
 
-            reviewsList = [];
+            reviews = [];
         }
 
-        let newReview = {
+        let imageData = "";
+
+        if(imageFile){
+
+            imageData = await compressImage(imageFile);
+        }
+
+        const newReview = {
 
             name: name,
 
-            rating: "⭐".repeat(parseInt(ratingNum)),
+            rating: "⭐".repeat(parseInt(rating)),
 
             text: text,
 
-            image: imageDataBase64
+            image: imageData
         };
 
-        reviewsList.unshift(newReview);
+        reviews.unshift(newReview);
 
-        // SAVE REVIEWS
-        let saveResponse = await fetch(API_URL, {
+        // SAVE ONLINE
+        const save = await fetch(API_URL, {
 
             method: "POST",
 
@@ -119,13 +141,14 @@ async function addReview(){
                 "Content-Type":"application/json"
             },
 
-            body: JSON.stringify(reviewsList)
+            body: JSON.stringify(reviews)
         });
 
-        if(saveResponse.ok){
+        if(save.ok){
 
-            alert("Review submitted successfully!");
+            alert("Review submitted!");
 
+            // RESET
             document.getElementById("reviewName").value = "";
 
             document.getElementById("reviewRating").value = "";
@@ -134,13 +157,13 @@ async function addReview(){
 
             document.getElementById("reviewImage").value = "";
 
-            let stars = document.querySelectorAll(".star-rating span");
-
-            stars.forEach(star => {
+            // RESET STARS
+            document.querySelectorAll(".star-rating span").forEach(star => {
 
                 star.style.color = "#ccc";
             });
 
+            // REFRESH REVIEWS
             displayReviews();
 
         }else{
@@ -152,7 +175,7 @@ async function addReview(){
 
         console.error(error);
 
-        alert("Error submitting review.");
+        alert("Something went wrong.");
     }
 
     submitBtn.disabled = false;
@@ -160,13 +183,14 @@ async function addReview(){
     submitBtn.innerHTML = "Submit Review";
 }
 
+// DISPLAY REVIEWS
 async function displayReviews(){
 
-    let container = document.getElementById("reviewsContainer");
+    const container = document.getElementById("reviewsContainer");
 
     try{
 
-        let response = await fetch(API_URL);
+        const response = await fetch(API_URL);
 
         if(!response.ok){
 
@@ -179,9 +203,9 @@ async function displayReviews(){
             return;
         }
 
-        let textData = await response.text();
+        const data = await response.text();
 
-        if(!textData || !textData.startsWith("[")){
+        if(!data || !data.startsWith("[")){
 
             container.innerHTML = `
             <p class="loading-text">
@@ -192,13 +216,11 @@ async function displayReviews(){
             return;
         }
 
-        let reviews = JSON.parse(textData);
+        const reviews = JSON.parse(data);
 
         container.innerHTML = "";
 
-        reviews.forEach(function(review){
-
-            let firstLetter = review.name.charAt(0).toUpperCase();
+        reviews.forEach(review => {
 
             let imageHTML = "";
 
@@ -214,7 +236,7 @@ async function displayReviews(){
             <div class="review-item">
 
                 <div class="review-profile">
-                    ${firstLetter}
+                    ${review.name.charAt(0).toUpperCase()}
                 </div>
 
                 <div class="review-content">
@@ -253,25 +275,6 @@ async function displayReviews(){
         </p>
         `;
     }
-}
-
-function setRating(ratingValue){
-
-    document.getElementById("reviewRating").value = ratingValue;
-
-    let stars = document.querySelectorAll(".star-rating span");
-
-    stars.forEach((star, index) => {
-
-        if(index < ratingValue){
-
-            star.style.color = "gold";
-
-        }else{
-
-            star.style.color = "#ccc";
-        }
-    });
 }
 
 </script>
