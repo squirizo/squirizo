@@ -177,12 +177,13 @@ function openOrderForm(){
     document.getElementById("orderModal").style.display = "flex";
 }
 
+// NILINIS KO DIN ANG CLOSE FORM PARA MA-RESET ANG LAYOUT BUTTONS PARA KUNG MAG-CHANGE NG PAY METHOD NG PAULIT-ULIT
 function closeOrderForm(){
     document.getElementById("orderModal").style.display = "none";
 }
 
 // ========================================================
-// SHOW GCASH FIELD & DETECT DEVICE NATIVELY
+// SHOW GCASH FIELD & DETECT DEVICE NATIVELY (FIXED FOR ANDROID)
 // ========================================================
 function showGcashField(){
     let payment = document.getElementById("paymentMethod").value;
@@ -202,11 +203,12 @@ function showGcashField(){
 
         if(isMobile){
             if(isAndroid){
-                gcashLinkWrapper.href = "intent://#Intent;scheme=gcash;package=com.globe.gcash;end";
+                // BAGO: Gumamit ng Universal Link fallback na naiintindihan ng Android web subsystem
+                gcashLinkWrapper.href = "https://m.gcash.com/app/login";
             } else {
+                // iOS standard deep link URI
                 gcashLinkWrapper.href = "gcash://";
             }
-            // Itatago ang lumang static button, sabay na i-o-on ang text panel at direct application launcher button
             normalBtn.style.display = "none";
             mobileReminder.style.display = "block";
             gcashLinkWrapper.style.display = "block";
