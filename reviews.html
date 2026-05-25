@@ -292,9 +292,9 @@ header h1{
 </div>
 
 <script>
-// PALITAN MO ITO NG MGA DETALYE MULA SA ACCOUNT MO SA JSONBIN.IO
-const BIN_ID = "ILAGAY_DITO_ANG_BIN_ID"; 
-const MASTER_KEY = "ILAGAY_DITO_ANG_MASTER_KEY"; 
+// NAKA-SET NA DITO ANG DIRECT LINK MO MULA SA KVDB.IO!
+const BUCKET_URL = "https://kvdb.io/BYz7cfcbgzkiw4pGvGfdpg";
+const API_URL = BUCKET_URL + "/squirizo_key";
 
 window.onload = function(){
     displayReviews();
@@ -331,24 +331,27 @@ async function saveReviewToCloud(name, rating, text, image){
     let submitBtn = document.getElementById("submitBtn");
 
     try {
-        // 1. KUKUNIN MUNA ANG KASALUKUYANG MGA REVIEWS MULA SA CLOUD
-        let getResponse = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-            headers: { "X-Master-Key": MASTER_KEY }
-        });
-        let currentData = await getResponse.json();
-        let reviewsList = Array.isArray(currentData.record) ? currentData.record : [];
+        // 1. KUKUNIN ANG MGA LUMANG REVIEWS
+        let reviewsList = [];
+        try {
+            let getResponse = await fetch(API_URL);
+            if(getResponse.ok) {
+                reviewsList = await getResponse.json();
+            }
+        } catch(e) {
+            reviewsList = [];
+        }
 
-        // 2. IDADAGDAG ANG BAGONG REVIEW SA LISTAHAN
+        if(!Array.isArray(reviewsList)) reviewsList = [];
+
+        // 2. IDADAGDAG ANG BAGO
         let newReview = { name, rating, text, image };
-        reviewsList.unshift(newReview); // unshift para nasa unahan lagi ang bago
+        reviewsList.unshift(newReview);
 
-        // 3. I-UUPDATE AT I-SASESAVE PABALIK SA CLOUD
-        let putResponse = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "X-Master-Key": MASTER_KEY
-            },
+        // 3. I-SASESAVE PABALIK SA CLOUD
+        let putResponse = await fetch(API_URL, {
+            method: "POST", 
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(reviewsList)
         });
 
@@ -379,15 +382,16 @@ async function displayReviews(){
     let container = document.getElementById("reviewsContainer");
 
     try {
-        let response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-            headers: { "X-Master-Key": MASTER_KEY }
-        });
+        let response = await fetch(API_URL);
+        if(!response.ok) {
+            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
+            return;
+        }
         
-        let data = await response.json();
-        let reviews = Array.isArray(data.record) ? data.record : [];
+        let reviews = await response.json();
         container.innerHTML = "";
 
-        if(reviews.length === 0){
+        if(!reviews || reviews.length === 0){
             container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
             return;
         }
@@ -411,7 +415,7 @@ async function displayReviews(){
         });
     } catch (error) {
         console.error(error);
-        container.innerHTML = '<p class="loading-text" style="color:red;">Error loading reviews.</p>';
+        container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
     }
 }
 
