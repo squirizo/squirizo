@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>SQUIRIZO Reviews</title>
-
-<link rel="stylesheet" href="css.css">
-
-<style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQUIRIZO Reviews</title>
+    <style>
+        
 *{
     margin:0;
     padding:0;
@@ -447,282 +443,91 @@ header h1{
         gap:5px;
     }
 }
-
-</style>
-
+    </style>
 </head>
-
 <body>
 
-<header>
-
-    <h1>SQUIRIZO REVIEWS</h1>
-
-</header>
-
-<a href="index.html" class="back-btn">
-← Back to Home
-</a>
-
-<!-- REVIEW FORM -->
+<header><h1>SQUIRIZO REVIEWS</h1></header>
+<a href="index.html" class="back-btn">← Back to Home</a>
 
 <div class="review-form">
-
     <h2>Leave a Review</h2>
-
-    <input type="text"
-    id="reviewName"
-    placeholder="Enter Your Name">
-
-   <!-- STAR RATING -->
-
-<div class="star-rating">
-
-    <span onclick="setRating('⭐')">★</span>
-
-    <span onclick="setRating('⭐⭐')">★</span>
-
-    <span onclick="setRating('⭐⭐⭐')">★</span>
-
-    <span onclick="setRating('⭐⭐⭐⭐')">★</span>
-
-    <span onclick="setRating('⭐⭐⭐⭐⭐')">★</span>
-
+    <input type="text" id="reviewName" placeholder="Enter Your Name">
+    <div class="star-rating">
+        <span onclick="setRating('⭐')">★</span>
+        <span onclick="setRating('⭐⭐')">★</span>
+        <span onclick="setRating('⭐⭐⭐')">★</span>
+        <span onclick="setRating('⭐⭐⭐⭐')">★</span>
+        <span onclick="setRating('⭐⭐⭐⭐⭐')">★</span>
+    </div>
+    <input type="hidden" id="reviewRating">
+    <textarea id="reviewText" placeholder="Write your review here..." rows="5"></textarea>
+    <input type="file" id="reviewImage" accept="image/*">
+    <button onclick="saveToSpreadsheet()">Submit Review</button>
 </div>
 
-<input type="hidden" id="reviewRating">
-
-    <textarea
-    id="reviewText"
-    placeholder="Write your review here..."
-    rows="5"></textarea>
-    <input type="file"
-id="reviewImage"
-accept="image/*">
-
-    <button onclick="addReview()">
-
-        Submit Review
-
-    </button>
-
-</div>
-
-<!-- REVIEWS DISPLAY -->
-
-<div class="reviews-list"
-id="reviewsContainer">
-
-</div>
+<div class="reviews-list" id="reviewsContainer"></div>
 
 <script>
+// I-PALIT MO ITO NG API URL MULA SA SHEETDB
+const API_URL = "YOUR_API_URL_HERE"; 
 
-window.onload = function(){
+async function saveToSpreadsheet() {
+    const name = document.getElementById("reviewName").value;
+    const rating = document.getElementById("reviewRating").value;
+    const text = document.getElementById("reviewText").value;
+    const file = document.getElementById("reviewImage").files[0];
 
-    displayReviews();
-}
+    if (!name || !rating || !text) return alert("Fill all fields!");
 
-// ADD REVIEW
-
-function addReview(){
-
-    let name =
-    document.getElementById(
-    "reviewName").value;
-
-    let rating =
-    document.getElementById(
-    "reviewRating").value;
-
-    let text =
-    document.getElementById(
-    "reviewText").value;
-
-    let imageInput =
-    document.getElementById(
-    "reviewImage");
-
-    let file =
-    imageInput.files[0];
-
-    // VALIDATION
-
-    if(name === "" ||
-       rating === "" ||
-       text === ""){
-
-        alert("Please fill up all fields!");
-
-        return;
+    let imageBase64 = "";
+    if (file) {
+        imageBase64 = await new Promise(r => {
+            let reader = new FileReader();
+            reader.onload = e => r(e.target.result);
+            reader.readAsDataURL(file);
+        });
     }
 
-    // IF MAY IMAGE
+    // POST sa Google Sheet
+    await fetch(API_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ data: [{ name, rating, text, image: imageBase64 }] })
+    });
 
-    if(file){
-
-        let reader = new FileReader();
-
-        reader.onload = function(e){
-
-            saveReview(
-                name,
-                rating,
-                text,
-                e.target.result
-            );
-        };
-
-        reader.readAsDataURL(file);
-
-    }else{
-
-        saveReview(
-            name,
-            rating,
-            text,
-            ""
-        );
-    }
+    alert("Review saved to Spreadsheet!");
+    location.reload();
 }
 
-// SAVE REVIEW
+async function displayReviews() {
+    const container = document.getElementById("reviewsContainer");
+    const res = await fetch(API_URL);
+    const data = await res.json();
 
-function saveReview(
-    name,
-    rating,
-    text,
-    image
-){
-
-    let review = {
-
-        name:name,
-        rating:rating,
-        text:text,
-        image:image
-    };
-
-    let reviews =
-    JSON.parse(
-    localStorage.getItem("reviews"))
-    || [];
-
-    reviews.push(review);
-
-    localStorage.setItem(
-    "reviews",
-    JSON.stringify(reviews)
-    );
-
-    // CLEAR
-
-    document.getElementById(
-    "reviewName").value = "";
-
-    document.getElementById(
-    "reviewRating").value = "";
-
-    document.getElementById(
-    "reviewText").value = "";
-
-    document.getElementById(
-    "reviewImage").value = "";
-
-    displayReviews();
-}
-
-// DISPLAY REVIEWS
-
-function displayReviews(){
-
-    let reviews =
-    JSON.parse(
-    localStorage.getItem("reviews"))
-    || [];
-
-    let container =
-    document.getElementById(
-    "reviewsContainer");
-
-    container.innerHTML = "";
-
-    reviews.reverse().forEach(function(review){
-
-        let firstLetter =
-        review.name.charAt(0)
-        .toUpperCase();
-
-        container.innerHTML += `
-
+    container.innerHTML = data.map(r => `
         <div class="review-item">
-
-            <div class="review-profile">
-                ${firstLetter}
-            </div>
-
+            <div class="review-profile">${r.name[0]}</div>
             <div class="review-content">
-
                 <div class="review-top">
-
-                    <div class="review-name">
-                        ${review.name}
-                    </div>
-
-                    <div class="review-stars">
-                        ${review.rating}
-                    </div>
-
+                    <div class="review-name">${r.name}</div>
+                    <div class="review-stars">${r.rating}</div>
                 </div>
-
-                <div class="review-text">
-                    ${review.text}
-                </div>
-
-                ${
-                    review.image
-                    ?
-
-                    `<img src="${review.image}"
-                    class="review-image">`
-
-                    :
-
-                    ""
-                }
-
+                <div class="review-text">${r.text}</div>
+                ${r.image ? `<img src="${r.image}" style="max-width:150px; border-radius:10px;">` : ""}
             </div>
-
         </div>
-        `;
+    `).join("");
+}
+
+function setRating(rating) {
+    document.getElementById("reviewRating").value = rating;
+    document.querySelectorAll(".star-rating span").forEach((s, i) => {
+        s.classList.toggle("active", i < rating.length);
     });
 }
 
-// STAR RATING
-
-function setRating(rating){
-
-    document.getElementById(
-    "reviewRating").value = rating;
-
-    let stars =
-    document.querySelectorAll(
-    ".star-rating span"
-    );
-
-    stars.forEach((star,index)=>{
-
-        if(index < rating.length){
-
-            star.classList.add("active");
-
-        }else{
-
-            star.classList.remove("active");
-        }
-    });
-}
-
+displayReviews();
 </script>
-
 </body>
 </html>
