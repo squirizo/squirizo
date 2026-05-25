@@ -2,31 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SQUIRIZO Reviews</title>
     <style>
-        body { font-family: sans-serif; background: #fbe4d5; padding: 20px; }
-        .review-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; }
+        /* CSS NA ANG NAGPAPAGANDA SA PAGE MO */
+        body { background: #fbe4d5; font-family: sans-serif; padding: 20px; }
+        .review-form { background: white; padding: 20px; border-radius: 15px; max-width: 500px; margin: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        input, textarea { width: 100%; margin: 10px 0; padding: 10px; border-radius: 8px; border: 1px solid #ccc; }
+        button { background: #ff6600; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .review-item { background: white; padding: 15px; border-radius: 10px; margin: 15px auto; max-width: 500px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .review-img { max-width: 100px; display: block; margin-top: 10px; border-radius: 5px; }
     </style>
 </head>
 <body>
 
 <div class="review-form">
+    <h2>Leave a Review</h2>
     <input type="text" id="name" placeholder="Name">
-    <textarea id="text" placeholder="Review"></textarea>
+    <textarea id="text" placeholder="Write your review here..."></textarea>
     <input type="file" id="image">
-    <button onclick="saveReview()" id="btn">Submit</button>
+    <button onclick="saveReview()" id="btn">Submit Review</button>
 </div>
 
-<div id="display">Loading...</div>
+<div id="display"></div>
 
 <script>
-// --- PALITAN MO ITO NG API URL MULA SA SHEETDB.IO ---
+// I-paste dito yung API URL mula sa SheetDB na ginawa mo
 const API_URL = "https://sheetdb.io/api/v1/zxmdtvlmdyb9u"; 
 
 async function saveReview() {
     const btn = document.getElementById("btn");
     btn.disabled = true; btn.innerText = "Saving...";
-
     const name = document.getElementById("name").value;
     const text = document.getElementById("text").value;
     const file = document.getElementById("image").files[0];
@@ -40,13 +46,10 @@ async function saveReview() {
         await fetch(API_URL, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ data: [{ name: name, rating: "5", text: text, image: imageBase64 }] })
+            body: JSON.stringify({ data: [{ name, rating: "5", text, image: imageBase64 }] })
         });
-        alert("Success!");
         location.reload();
-    } catch(e) {
-        alert("Error! Check console.");
-    }
+    } catch(e) { alert("Error! Check API URL."); }
 }
 
 async function loadReviews() {
@@ -56,7 +59,7 @@ async function loadReviews() {
         document.getElementById("display").innerHTML = data.map(r => `
             <div class="review-item">
                 <strong>${r.name}</strong><p>${r.text}</p>
-                ${r.image ? `<img src="${r.image}" width="100">` : ""}
+                ${r.image ? `<img src="${r.image}" class="review-img">` : ""}
             </div>
         `).join("");
     } catch(e) { document.getElementById("display").innerHTML = "No reviews yet."; }
