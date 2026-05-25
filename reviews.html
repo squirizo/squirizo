@@ -53,7 +53,7 @@ header h1{
     transform:translateX(-5px);
 }
 
-/* REVIEW FORM (Eksaktong porma ng una mong screenshot) */
+/* REVIEW FORM */
 .review-form{
     background:rgba(255,255,255,0.95);
     backdrop-filter:blur(10px);
@@ -106,13 +106,9 @@ header h1{
 .star-rating span{
     font-size:40px;
     cursor:pointer;
-    opacity:0.4;
-    transition:0.3s;
-}
-
-.star-rating span.active{
-    opacity:1;
-    color:gold;
+    color: #ccc; /* Default gray pag di pa naka-click */
+    transition: 0.2s;
+    display: inline-block;
 }
 
 /* REVIEWS CONTAINER */
@@ -203,199 +199,7 @@ header h1{
     <input type="text" id="reviewName" placeholder="Enter Your Name">
 
     <div class="star-rating">
-        <span onclick="setRating('⭐')">★</span>
-        <span onclick="setRating('⭐⭐')">★</span>
-        <span onclick="setRating('⭐⭐⭐')">★</span>
-        <span onclick="setRating('⭐⭐⭐⭐')">★</span>
-        <span onclick="setRating('⭐⭐⭐⭐⭐')">★</span>
-    </div>
-    
-    <input type="hidden" id="reviewRating">
-
-    <textarea id="reviewText" placeholder="Write your review here..." rows="5"></textarea>
-    
-    <input type="file" id="reviewImage" accept="image/*">
-    
-    <button id="submitBtn" onclick="addReview()">Submit Review</button>
-</div>
-
-<div class="reviews-list" id="reviewsContainer">
-    <p class="loading-text">Loading reviews...</p>
-</div>
-
-<script>
-const API_URL = "https://kvdb.io/BYz7cfcbgzkiw4pGvGfdpg/squirizo_key";
-
-window.onload = function(){
-    displayReviews();
-}
-
-function compressImage(file) {
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = event => {
-            const img = new Image();
-            img.src = event.target.result;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 400; 
-                const scaleSize = MAX_WIDTH / img.width;
-                canvas.width = MAX_WIDTH;
-                canvas.height = img.height * scaleSize;
-                
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
-                resolve(dataUrl);
-            };
-        };
-    });
-}
-
-async function addReview(){
-    let name = document.getElementById("reviewName").value.trim();
-    let rating = document.getElementById("reviewRating").value;
-    let text = document.getElementById("reviewText").value.trim();
-    let imageFile = document.getElementById("reviewImage").files[0];
-    let submitBtn = document.getElementById("submitBtn");
-
-    if(name === "" || rating === "" || text === ""){
-        alert("Please fill up all fields!");
-        return;
-    }
-
-    // "Submitting..." LALANG ANG NAKALAGAY GAYA NG GUSTO MO!
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = "Submitting...";
-
-    try {
-        let imageDataBase64 = "";
-        
-        // KUNG MAY PICTURE, I-COMPRESS. KUNG WALA, BLANGKO LANG. (PASOK PA RIN!)
-        if (imageFile) {
-            try {
-                imageDataBase64 = await compressImage(imageFile);
-            } catch(err) {
-                console.error(err);
-            }
-        }
-
-        let reviewsList = [];
-        
-        try {
-            let getResponse = await fetch(API_URL);
-            if(getResponse.ok) {
-                let textData = await getResponse.text();
-                if (textData && textData.trim().startsWith("[")) {
-                    reviewsList = JSON.parse(textData);
-                }
-            }
-        } catch(e) {
-            reviewsList = [];
-        }
-
-        if(!Array.isArray(reviewsList)) reviewsList = [];
-
-        let newReview = { name, rating, text, image: imageDataBase64 };
-        reviewsList.unshift(newReview);
-
-        // Naka-PUT method na para siguradong pumasok sa database niyo
-        let putResponse = await fetch(API_URL, {
-            method: "PUT", 
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(reviewsList)
-        });
-
-        if(putResponse.ok){
-            alert("Thank you! Your review has been saved online. ❤️");
-            document.getElementById("reviewName").value = "";
-            document.getElementById("reviewRating").value = "";
-            document.getElementById("reviewText").value = "";
-            document.getElementById("reviewImage").value = "";
-            
-            let stars = document.querySelectorAll(".star-rating span");
-            stars.forEach(star => star.classList.remove("active"));
-            
-            displayReviews();
-        } else {
-            alert("Failed to submit review.");
-        }
-    } catch (error) {
-        console.error(error);
-        alert("Network Error. Please try again.");
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = "Submit Review";
-    }
-}
-
-async function displayReviews(){
-    let container = document.getElementById("reviewsContainer");
-
-    try {
-        let response = await fetch(API_URL);
-        if(!response.ok) {
-            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
-            return;
-        }
-        
-        let textData = await response.text();
-        if(!textData || !textData.trim().startsWith("[")) {
-            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
-            return;
-        }
-
-        let reviews = JSON.parse(textData);
-        container.innerHTML = "";
-
-        if(!reviews || reviews.length === 0){
-            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
-            return;
-        }
-
-        reviews.forEach(function(review){
-            let firstLetter = review.name ? review.name.charAt(0).toUpperCase() : "U";
-            
-            let imgTag = "";
-            if (review.image && review.image.startsWith("data:image")) {
-                imgTag = `<img src="${review.image}" class="review-img-display">`;
-            }
-
-            container.innerHTML += `
-            <div class="review-item">
-                <div class="review-profile">${firstLetter}</div>
-                <div class="review-content">
-                    <div class="review-top">
-                        <div class="review-name">${review.name}</div>
-                        <div class="review-stars">${review.rating}</div>
-                    </div>
-                    <div class="review-text">${review.text}</div>
-                    ${imgTag}
-                </div>
-            </div>
-            `;
-        });
-    } catch (error) {
-        console.error(error);
-        container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
-    }
-}
-
-function setRating(rating){
-    document.getElementById("reviewRating").value = rating;
-    let stars = document.querySelectorAll(".star-rating span");
-
-    stars.forEach((star, index) => {
-        if(index < rating.length){
-            star.classList.add("active");
-        }else{
-            star.classList.remove("active");
-        }
-    });
-}
-</script>
-
-</body>
-</html>
+        <span onclick="setRating(1)">★</span>
+        <span onclick="setRating(2)">★</span>
+        <span onclick="setRating(3)">★</span>
+        <span onclick="setRating(4
