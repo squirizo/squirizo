@@ -5,444 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SQUIRIZO Reviews</title>
     <style>
-        
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-
-    background:
-    linear-gradient(
-    135deg,
-    #fff6ef,
-    #fbe4d5
-    );
-
-    min-height:100vh;
-}
-
-/* HEADER */
-
-header{
-
-    background:
-    linear-gradient(
-    90deg,
-    #7b4b32,
-    #a15c38
-    );
-
-    color:white;
-
-    padding:25px;
-
-    text-align:center;
-
-    box-shadow:0 5px 15px rgba(0,0,0,0.2);
-
-    animation:fadeDown 1s ease;
-}
-
-header h1{
-
-    font-size:45px;
-
-    letter-spacing:3px;
-}
-
-/* BACK BUTTON */
-
-.back-btn{
-
-    display:inline-flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    margin:25px;
-
-    padding:12px 22px;
-
-    background:
-    linear-gradient(
-    45deg,
-    #ff6600,
-    #ff944d
-    );
-
-    color:white;
-
-    text-decoration:none;
-
-    border-radius:50px;
-
-    font-weight:bold;
-
-    box-shadow:0 6px 15px rgba(0,0,0,0.15);
-
-    transition:0.3s;
-}
-
-.back-btn:hover{
-
-    transform:translateX(-5px);
-
-    box-shadow:0 10px 20px rgba(0,0,0,0.2);
-}
-
-/* REVIEW FORM */
-
-.review-form{
-
-    background:rgba(255,255,255,0.95);
-
-    backdrop-filter:blur(10px);
-
-    width:90%;
-    max-width:550px;
-
-    margin:auto;
-
-    padding:35px;
-
-    border-radius:25px;
-
-    box-shadow:0 10px 25px rgba(0,0,0,0.12);
-
-    animation:fadeUp 1s ease;
-}
-
-.review-form h2{
-
-    text-align:center;
-
-    margin-bottom:25px;
-
-    color:#7b4b32;
-
-    font-size:32px;
-}
-
-/* INPUTS */
-
-.review-form input,
-.review-form textarea{
-
-    width:100%;
-
-    padding:15px;
-
-    margin:12px 0;
-
-    border-radius:15px;
-
-    border:1px solid #ddd;
-
-    font-size:16px;
-
-    transition:0.3s;
-}
-
-.review-form input:focus,
-.review-form textarea:focus{
-
-    border-color:#ff6600;
-
-    outline:none;
-
-    box-shadow:0 0 10px rgba(255,102,0,0.2);
-}
-
-/* BUTTON */
-
-.review-form button{
-
-    width:100%;
-
-    padding:15px;
-
-    border:none;
-
-    background:
-    linear-gradient(
-    45deg,
-    #ff6600,
-    #ff944d
-    );
-
-    color:white;
-
-    border-radius:15px;
-
-    font-size:18px;
-
-    cursor:pointer;
-
-    margin-top:10px;
-
-    transition:0.3s;
-
-    font-weight:bold;
-}
-
-.review-form button:hover{
-
-    transform:scale(1.03);
-
-    box-shadow:0 10px 20px rgba(0,0,0,0.15);
-}
-
-/* STAR RATING */
-
-.star-rating{
-
-    text-align:center;
-
-    margin-bottom:15px;
-}
-
-.star-rating span{
-
-    font-size:40px;
-
-    cursor:pointer;
-
-    opacity:0.4;
-
-    transition:0.3s;
-}
-
-.star-rating span:hover{
-
-    transform:scale(1.2);
-
-    color:gold;
-}
-
-.star-rating span.active{
-
-    opacity:1;
-
-    color:gold;
-}
-
-/* REVIEWS CONTAINER */
-
-.reviews-list{
-
-    width:90%;
-    max-width:950px;
-
-    margin:50px auto;
-}
-
-/* REVIEW ITEM */
-
-.review-item{
-
-    display:flex;
-
-    gap:18px;
-
-    margin-bottom:25px;
-
-    padding:25px;
-
-    background:white;
-
-    border-radius:25px;
-
-    box-shadow:0 8px 20px rgba(0,0,0,0.08);
-
-    transition:0.3s;
-
-    animation:cardFade 0.8s ease;
-}
-
-.review-item:hover{
-
-    transform:translateY(-5px);
-
-    box-shadow:0 15px 30px rgba(0,0,0,0.12);
-}
-
-/* PROFILE */
-
-.review-profile{
-
-    width:60px;
-
-    height:60px;
-
-    border-radius:50%;
-
-    background:
-    linear-gradient(
-    45deg,
-    #ff6600,
-    #ff944d
-    );
-
-    color:white;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    font-size:24px;
-
-    font-weight:bold;
-
-    flex-shrink:0;
-
-    box-shadow:0 5px 15px rgba(255,102,0,0.3);
-}
-
-/* REVIEW CONTENT */
-
-.review-content{
-
-    width:100%;
-}
-
-/* TOP */
-
-.review-top{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    margin-bottom:10px;
-
-    flex-wrap:wrap;
-}
-
-/* NAME */
-
-.review-name{
-
-    font-weight:bold;
-
-    font-size:20px;
-
-    color:#222;
-}
-
-/* STARS */
-
-.review-stars{
-
-    color:gold;
-
-    font-size:20px;
-}
-
-/* TEXT */
-
-.review-text{
-
-    color:#555;
-
-    line-height:1.7;
-
-    font-size:16px;
-
-    margin-top:8px;
-}
-
-/* ANIMATIONS */
-
-@keyframes fadeDown{
-
-    from{
-
-        opacity:0;
-
-        transform:translateY(-40px);
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:translateY(0);
-    }
-}
-
-@keyframes fadeUp{
-
-    from{
-
-        opacity:0;
-
-        transform:translateY(40px);
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:translateY(0);
-    }
-}
-
-@keyframes cardFade{
-
-    from{
-
-        opacity:0;
-
-        transform:translateY(30px);
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:translateY(0);
-    }
-}
-
-/* MOBILE */
-
-@media(max-width:768px){
-
-    header h1{
-
-        font-size:35px;
-    }
-
-    .review-form{
-
-        padding:25px;
-    }
-
-    .review-item{
-
-        flex-direction:column;
-
-        align-items:flex-start;
-    }
-
-    .review-top{
-
-        flex-direction:column;
-
-        align-items:flex-start;
-
-        gap:5px;
-    }
-}
+        /* CSS mo (hindi ko ginalaw) */
+        *{ margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
+        body{ background: linear-gradient(135deg, #fff6ef, #fbe4d5); min-height:100vh; }
+        header{ background: linear-gradient(90deg, #7b4b32, #a15c38); color:white; padding:25px; text-align:center; }
+        .back-btn{ display:inline-flex; align-items:center; gap:10px; margin:25px; padding:12px 22px; background: linear-gradient(45deg, #ff6600, #ff944d); color:white; text-decoration:none; border-radius:50px; font-weight:bold; }
+        .review-form{ background:rgba(255,255,255,0.95); width:90%; max-width:550px; margin:auto; padding:35px; border-radius:25px; box-shadow:0 10px 25px rgba(0,0,0,0.12); }
+        .review-form input, .review-form textarea{ width:100%; padding:15px; margin:12px 0; border-radius:15px; border:1px solid #ddd; }
+        .review-form button{ width:100%; padding:15px; border:none; background: linear-gradient(45deg, #ff6600, #ff944d); color:white; border-radius:15px; font-weight:bold; cursor:pointer; }
+        .star-rating{ text-align:center; margin-bottom:15px; }
+        .star-rating span{ font-size:40px; cursor:pointer; opacity:0.4; color: #ccc; }
+        .star-rating span.active{ opacity:1; color:gold; }
+        .reviews-list{ width:90%; max-width:950px; margin:50px auto; }
+        .review-item{ display:flex; gap:18px; margin-bottom:25px; padding:25px; background:white; border-radius:25px; box-shadow:0 8px 20px rgba(0,0,0,0.08); }
+        .review-profile{ width:60px; height:60px; border-radius:50%; background:#ff6600; color:white; display:flex; justify-content:center; align-items:center; font-weight:bold; flex-shrink:0; }
+        .review-content{ width:100%; }
+        .review-name{ font-weight:bold; font-size:20px; }
     </style>
 </head>
 <body>
@@ -454,13 +32,9 @@ header h1{
     <h2>Leave a Review</h2>
     <input type="text" id="reviewName" placeholder="Enter Your Name">
     <div class="star-rating">
-        <span onclick="setRating('⭐')">★</span>
-        <span onclick="setRating('⭐⭐')">★</span>
-        <span onclick="setRating('⭐⭐⭐')">★</span>
-        <span onclick="setRating('⭐⭐⭐⭐')">★</span>
-        <span onclick="setRating('⭐⭐⭐⭐⭐')">★</span>
+        <span onclick="setRating(1)">★</span><span onclick="setRating(2)">★</span><span onclick="setRating(3)">★</span><span onclick="setRating(4)">★</span><span onclick="setRating(5)">★</span>
     </div>
-    <input type="hidden" id="reviewRating">
+    <input type="hidden" id="reviewRating" value="0">
     <textarea id="reviewText" placeholder="Write your review here..." rows="5"></textarea>
     <input type="file" id="reviewImage" accept="image/*">
     <button onclick="saveToSpreadsheet()">Submit Review</button>
@@ -469,8 +43,8 @@ header h1{
 <div class="reviews-list" id="reviewsContainer"></div>
 
 <script>
-// I-PALIT MO ITO NG API URL MULA SA SHEETDB
 const API_URL = "https://sheetdb.io/api/v1/zxmdtvlmdyb9u"; 
+const IMGBB_KEY = "5cfa734553b984fe1453996cb6016322"; 
 
 async function saveToSpreadsheet() {
     const name = document.getElementById("reviewName").value;
@@ -478,73 +52,49 @@ async function saveToSpreadsheet() {
     const text = document.getElementById("reviewText").value;
     const file = document.getElementById("reviewImage").files[0];
 
-    if (!name || !rating || !text) return alert("Fill all fields!");
+    if (!name || rating == 0 || !text) return alert("Paki-fill up lahat ng fields at mag-rate!");
 
     let imageUrl = "";
     if (file) {
-        // I-upload sa ImgBB
         const formData = new FormData();
         formData.append("image", file);
-        
-        // Gamitin ang ImgBB API (kumuha ng API Key sa imgbb.com)
-        const response = await fetch("https://api.imgbb.com/1/upload?key=YOUR_IMGBB_API_KEY", {
+        const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
             method: "POST",
             body: formData
         });
         const result = await response.json();
-        imageUrl = result.data.url; // Ito yung link ng image
+        if(result.success) imageUrl = result.data.url;
     }
 
-    // I-save ang URL sa spreadsheet (yung image column mo ay magiging link)
     await fetch(API_URL, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ data: [{ name, rating, text, image: imageUrl }] })
+        body: JSON.stringify({ data: [{ name, rating: "⭐".repeat(rating), text, image: imageUrl }] })
     });
-
     alert("Review saved!");
     location.reload();
 }
 
 async function displayReviews() {
     const container = document.getElementById("reviewsContainer");
-    
-    try {
-        const res = await fetch(API_URL);
-        const data = await res.json();
-
-        // I-check kung may laman ang data
-        if (data.length === 0) {
-            container.innerHTML = "<p style='text-align:center;'>No reviews yet. Be the first to leave one!</p>";
-            return;
-        }
-
-        // I-render ang reviews (baligtarin para nasa taas ang bago)
-        container.innerHTML = data.reverse().map(r => `
-            <div class="review-item">
-                <div class="review-profile">${r.name ? r.name[0].toUpperCase() : 'U'}</div>
-                <div class="review-content">
-                    <div class="review-top">
-                        <div class="review-name">${r.name}</div>
-                        <div class="review-stars">${r.rating}</div>
-                    </div>
-                    <div class="review-text">${r.text}</div>
-                    ${r.image ? `<img src="${r.image}" style="max-width:150px; margin-top:10px; border-radius:10px;">` : ""}
-                </div>
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    container.innerHTML = data.reverse().map(r => `
+        <div class="review-item">
+            <div class="review-profile">${r.name ? r.name[0].toUpperCase() : 'U'}</div>
+            <div class="review-content">
+                <div class="review-name">${r.name}</div>
+                <div style="color:gold">${r.rating}</div>
+                <div style="margin-top:5px">${r.text}</div>
+                ${r.image ? `<img src="${r.image}" style="max-width:150px; margin-top:10px; border-radius:10px;">` : ""}
             </div>
-        `).join("");
-        
-    } catch (error) {
-        console.error("Error fetching reviews:", error);
-        container.innerHTML = "<p style='text-align:center;'>Unable to load reviews at this time.</p>";
-    }
+        </div>
+    `).join("");
 }
 
-function setRating(rating) {
-    document.getElementById("reviewRating").value = rating;
-    document.querySelectorAll(".star-rating span").forEach((s, i) => {
-        s.classList.toggle("active", i < rating.length);
-    });
+function setRating(val) {
+    document.getElementById("reviewRating").value = val;
+    document.querySelectorAll(".star-rating span").forEach((s, i) => s.classList.toggle("active", i < val));
 }
 
 displayReviews();
