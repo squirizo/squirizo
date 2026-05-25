@@ -516,68 +516,212 @@ id="reviewsContainer">
 </div>
 
 <script>
-// I-handle ang pag-submit ng review nang direkta sa page
-function addReview() {
-    const name = document.getElementById("reviewName").value;
-    const rating = document.getElementById("reviewRating").value;
-    const text = document.getElementById("reviewText").value;
-    const imageInput = document.getElementById("reviewImage");
-    const file = imageInput.files[0];
 
-    // Validation
-    if(name === "" || rating === "" || text === ""){
-        alert("Please fill up all fields (including rating)!");
+window.onload = function(){
+
+    displayReviews();
+}
+
+// ADD REVIEW
+
+function addReview(){
+
+    let name =
+    document.getElementById(
+    "reviewName").value;
+
+    let rating =
+    document.getElementById(
+    "reviewRating").value;
+
+    let text =
+    document.getElementById(
+    "reviewText").value;
+
+    let imageInput =
+    document.getElementById(
+    "reviewImage");
+
+    let file =
+    imageInput.files[0];
+
+    // VALIDATION
+
+    if(name === "" ||
+       rating === "" ||
+       text === ""){
+
+        alert("Please fill up all fields!");
+
         return;
     }
 
-    // Logic para sa pag-display
-    const reader = new FileReader();
-    reader.onload = function(e){
-        displayReview(name, rating, text, e.target.result);
+    // IF MAY IMAGE
+
+    if(file){
+
+        let reader = new FileReader();
+
+        reader.onload = function(e){
+
+            saveReview(
+                name,
+                rating,
+                text,
+                e.target.result
+            );
+        };
+
+        reader.readAsDataURL(file);
+
+    }else{
+
+        saveReview(
+            name,
+            rating,
+            text,
+            ""
+        );
+    }
+}
+
+// SAVE REVIEW
+
+function saveReview(
+    name,
+    rating,
+    text,
+    image
+){
+
+    let review = {
+
+        name:name,
+        rating:rating,
+        text:text,
+        image:image
     };
 
-    if(file) {
-        reader.readAsDataURL(file);
-    } else {
-        displayReview(name, rating, text, null);
-    }
+    let reviews =
+    JSON.parse(
+    localStorage.getItem("reviews"))
+    || [];
 
-    // I-clear ang form
-    document.getElementById("reviewName").value = "";
-    document.getElementById("reviewRating").value = "";
-    document.getElementById("reviewText").value = "";
-    document.getElementById("reviewImage").value = "";
-    document.querySelectorAll(".star-rating span").forEach(s => s.classList.remove("active"));
+    reviews.push(review);
+
+    localStorage.setItem(
+    "reviews",
+    JSON.stringify(reviews)
+    );
+
+    // CLEAR
+
+    document.getElementById(
+    "reviewName").value = "";
+
+    document.getElementById(
+    "reviewRating").value = "";
+
+    document.getElementById(
+    "reviewText").value = "";
+
+    document.getElementById(
+    "reviewImage").value = "";
+
+    displayReviews();
 }
 
-function displayReview(name, rating, text, imageSrc) {
-    const container = document.getElementById("reviewsContainer");
-    const firstLetter = name.charAt(0).toUpperCase();
+// DISPLAY REVIEWS
 
-    const reviewHTML = `
+function displayReviews(){
+
+    let reviews =
+    JSON.parse(
+    localStorage.getItem("reviews"))
+    || [];
+
+    let container =
+    document.getElementById(
+    "reviewsContainer");
+
+    container.innerHTML = "";
+
+    reviews.reverse().forEach(function(review){
+
+        let firstLetter =
+        review.name.charAt(0)
+        .toUpperCase();
+
+        container.innerHTML += `
+
         <div class="review-item">
-            <div class="review-profile">${firstLetter}</div>
-            <div class="review-content">
-                <div class="review-top">
-                    <div class="review-name">${name}</div>
-                    <div class="review-stars">${rating}</div>
-                </div>
-                <div class="review-text">${text}</div>
-                ${imageSrc ? `<img src="${imageSrc}" style="max-width:150px; margin-top:10px; border-radius:10px;">` : ""}
-            </div>
-        </div>
-    `;
-    container.innerHTML = reviewHTML + container.innerHTML;
-}
 
-// Para sa Star Rating
-function setRating(rating) {
-    document.getElementById("reviewRating").value = rating;
-    let stars = document.querySelectorAll(".star-rating span");
-    stars.forEach((star, index) => {
-        star.classList.toggle("active", index < rating.length);
+            <div class="review-profile">
+                ${firstLetter}
+            </div>
+
+            <div class="review-content">
+
+                <div class="review-top">
+
+                    <div class="review-name">
+                        ${review.name}
+                    </div>
+
+                    <div class="review-stars">
+                        ${review.rating}
+                    </div>
+
+                </div>
+
+                <div class="review-text">
+                    ${review.text}
+                </div>
+
+                ${
+                    review.image
+                    ?
+
+                    `<img src="${review.image}"
+                    class="review-image">`
+
+                    :
+
+                    ""
+                }
+
+            </div>
+
+        </div>
+        `;
     });
 }
+
+// STAR RATING
+
+function setRating(rating){
+
+    document.getElementById(
+    "reviewRating").value = rating;
+
+    let stars =
+    document.querySelectorAll(
+    ".star-rating span"
+    );
+
+    stars.forEach((star,index)=>{
+
+        if(index < rating.length){
+
+            star.classList.add("active");
+
+        }else{
+
+            star.classList.remove("active");
+        }
+    });
+}
+
 </script>
 
 </body>
