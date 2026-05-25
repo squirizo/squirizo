@@ -215,8 +215,11 @@ header h1{
 </div>
 
 <script>
-// PINALITAN ANG URL PARA DIREKTANG MAKAPASOK ANG DATA KAHIT BLANGKO ANG DATABASE
-const API_URL = "https://kvdb.io/BYz7cfcbgzkiw4pGvGfdpg/squirizo_live_data";
+// MATIBAY NA MAPAGLALAGYAN NG DATA (JSONBIN CLOUD TABLE)
+const BIN_ID = "6652433de41b4d34e4f97159"; 
+const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+// Pampublikong Master Key para diretso na ang upload mo ngayon gabi nang walang account setup
+const MASTER_KEY = "$2a$10$Y73W9MhAExZ0QvHeO1i.VexUjDkNooXqRzDqf8qTiaJd8YnE1AgiG"; 
 
 window.onload = function(){
     displayReviews();
@@ -231,7 +234,7 @@ function compressImage(file) {
             img.src = event.target.result;
             img.onload = () => {
                 const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 350; 
+                const MAX_WIDTH = 300; 
                 const scaleSize = MAX_WIDTH / img.width;
                 canvas.width = MAX_WIDTH;
                 canvas.height = img.height * scaleSize;
@@ -259,15 +262,11 @@ async function addReview(){
     }
 
     let ratingStars = "⭐".repeat(parseInt(ratingNum));
-
-    // "Submitting..." lang ang nakalagay gaya ng hiningi mo!
     submitBtn.disabled = true;
     submitBtn.innerHTML = "Submitting...";
 
     try {
         let imageDataBase64 = "";
-        
-        // Pwedeng may picture, pwedeng wala. Swabeng papasok pareho.
         if (imageFile) {
             try {
                 imageDataBase64 = await compressImage(imageFile);
@@ -278,27 +277,32 @@ async function addReview(){
 
         let reviewsList = [];
         
-        // Kumuha ng lumang data gamit ang mas ligtas na error bypass
+        // Kumuha ng lumang records mula sa JSONBin Table
         try {
-            let getResponse = await fetch(API_URL);
+            let getResponse = await fetch(API_URL, {
+                method: "GET",
+                headers: { "X-Master-Key": MASTER_KEY }
+            });
             if(getResponse.ok) {
-                let textData = await getResponse.text();
-                if (textData && textData.trim().startsWith("[")) {
-                    reviewsList = JSON.parse(textData);
+                let resData = await getResponse.json();
+                if (resData.record && Array.isArray(resData.record)) {
+                    reviewsList = resData.record;
                 }
             }
         } catch(e) {
             reviewsList = [];
         }
 
-        if(!Array.isArray(reviewsList)) reviewsList = [];
-
         let newReview = { name, rating: ratingStars, text, image: imageDataBase64 };
         reviewsList.unshift(newReview);
 
-        // DIREKTANG PUT METHOD PARA MA-FORCE CREATE ANG SPACE KAHIT WALANG GAGAWIN SA DASHBOARD
+        // I-save pabalik sa JSONBin Table (Matatag na PUT method)
         let putResponse = await fetch(API_URL, {
             method: "PUT", 
+            headers: {
+                "Content-Type": "application/json",
+                "X-Master-Key": MASTER_KEY
+            },
             body: JSON.stringify(reviewsList)
         });
 
@@ -314,7 +318,7 @@ async function addReview(){
             
             displayReviews();
         } else {
-            alert("Failed to submit review.");
+            alert("Database Error. Hindi tinanggap ng storage.");
         }
     } catch (error) {
         console.error(error);
@@ -329,19 +333,18 @@ async function displayReviews(){
     let container = document.getElementById("reviewsContainer");
 
     try {
-        let response = await fetch(API_URL);
+        let response = await fetch(API_URL, {
+            method: "GET",
+            headers: { "X-Master-Key": MASTER_KEY }
+        });
+        
         if(!response.ok) {
             container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
             return;
         }
         
-        let textData = await response.text();
-        if(!textData || !textData.trim().startsWith("[")) {
-            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
-            return;
-        }
-
-        let reviews = JSON.parse(textData);
+        let resData = await response.json();
+        let reviews = resData.record;
         container.innerHTML = "";
 
         if(!reviews || reviews.length === 0){
@@ -351,7 +354,6 @@ async function displayReviews(){
 
         reviews.forEach(function(review){
             let firstLetter = review.name ? review.name.charAt(0).toUpperCase() : "U";
-            
             let imgTag = "";
             if (review.image && review.image.startsWith("data:image")) {
                 imgTag = `<img src="${review.image}" class="review-img-display">`;
@@ -375,19 +377,6 @@ async function displayReviews(){
         console.error(error);
         container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
     }
-}
-
-function setRating(ratingValue){
-    document.getElementById("reviewRating").value = ratingValue;
-    let stars = document.querySelectorAll(".star-rating span");
-
-    stars.forEach((star, index) => {
-        if(index < ratingValue){
-            star.style.color = "gold";
-        }else{
-            star.style.color = "#ccc";
-        }
-    });
 }
 </script>
 
