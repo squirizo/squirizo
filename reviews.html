@@ -1,22 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQUIRIZO Reviews</title>
+
+<link rel="stylesheet" href="css.css">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background: linear-gradient(135deg, #fff6ef, #fbe4d5);
+    min-height:100vh;
+}
+
+header{
+    background: linear-gradient(90deg, #7b4b32, #a15c38);
+    color:white;
+    padding:25px;
+    text-align:center;
+}
+
+header h1{
+    font-size:45px;
+}
+
+.back-btn{
+    display:inline-block;
+    margin:25px;
+    padding:12px 20px;
+    background:#ff6600;
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+}
+
+.review-form{
+    background:white;
+    width:90%;
+    max-width:550px;
+    margin:auto;
+    padding:35px;
+    border-radius:20px;
+}
+
+.review-form h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.review-form input,
+.review-form textarea{
+    width:100%;
+    padding:15px;
+    margin:10px 0;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+.review-form button{
+    width:100%;
+    padding:15px;
+    border:none;
+    background:#ff6600;
+    color:white;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.star-rating{
+    text-align:center;
+    margin:15px 0;
+}
+
+.star-rating span{
+    font-size:40px;
+    cursor:pointer;
+    color:#ccc;
+}
+
+.reviews-list{
+    width:90%;
+    max-width:900px;
+    margin:40px auto;
+}
+
+.review-item{
+    background:white;
+    padding:20px;
+    border-radius:20px;
+    margin-bottom:20px;
+}
+
+.review-stars{
+    color:gold;
+    margin-bottom:10px;
+}
+
+.review-name{
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.review-img-display{
+    max-width:100%;
+    margin-top:10px;
+    border-radius:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>SQUIRIZO REVIEWS</h1>
+</header>
+
+<a href="index.html" class="back-btn">
+← Back to Home
+</a>
+
+<div class="review-form">
+
+    <h2>Leave a Review</h2>
+
+    <input type="text" id="reviewName" placeholder="Enter Your Name">
+
+    <div class="star-rating">
+
+        <span onclick="setRating(1)">★</span>
+        <span onclick="setRating(2)">★</span>
+        <span onclick="setRating(3)">★</span>
+        <span onclick="setRating(4)">★</span>
+        <span onclick="setRating(5)">★</span>
+
+    </div>
+
+    <input type="hidden" id="reviewRating">
+
+    <textarea id="reviewText" rows="5" placeholder="Write your review here..."></textarea>
+
+    <input type="file" id="reviewImage" accept="image/*">
+
+    <button onclick="addReview()" id="submitBtn">
+        Submit Review
+    </button>
+
+</div>
+
+<div class="reviews-list" id="reviewsContainer">
+
+</div>
+
 <script>
 
 const BUCKET_ID = "BYz7cfcbgzkiw4pGvGfdpg";
+
 const API_URL = `https://kvdb.io/${BUCKET_ID}/squirizo_live_data`;
 
-window.onload = () => {
+window.onload = function(){
+
     displayReviews();
 };
 
-// STAR RATING
-function setRating(ratingValue){
+function setRating(value){
 
-    document.getElementById("reviewRating").value = ratingValue;
+    document.getElementById("reviewRating").value = value;
 
     let stars = document.querySelectorAll(".star-rating span");
 
-    stars.forEach((star, index) => {
+    stars.forEach((star,index)=>{
 
-        if(index < ratingValue){
+        if(index < value){
 
             star.style.color = "gold";
 
@@ -27,10 +190,9 @@ function setRating(ratingValue){
     });
 }
 
-// IMAGE COMPRESS
 function compressImage(file){
 
-    return new Promise((resolve) => {
+    return new Promise((resolve)=>{
 
         const reader = new FileReader();
 
@@ -56,15 +218,14 @@ function compressImage(file){
 
                 const ctx = canvas.getContext("2d");
 
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img,0,0,canvas.width,canvas.height);
 
-                resolve(canvas.toDataURL("image/jpeg", 0.5));
+                resolve(canvas.toDataURL("image/jpeg",0.5));
             };
         };
     });
 }
 
-// ADD REVIEW
 async function addReview(){
 
     const name = document.getElementById("reviewName").value.trim();
@@ -75,115 +236,70 @@ async function addReview(){
 
     const imageFile = document.getElementById("reviewImage").files[0];
 
-    const submitBtn = document.getElementById("submitBtn");
-
     if(name === "" || rating === "" || text === ""){
 
-        alert("Please complete all fields!");
+        alert("Please complete all fields.");
 
         return;
     }
 
-    submitBtn.disabled = true;
-
-    submitBtn.innerHTML = "Submitting...";
+    let reviews = [];
 
     try{
 
-        let reviews = [];
+        const oldData = await fetch(API_URL);
 
-        // LOAD OLD DATA
-        try{
+        if(oldData.ok){
 
-            const response = await fetch(API_URL);
+            const data = await oldData.text();
 
-            if(response.ok){
+            if(data.startsWith("[")){
 
-                const oldData = await response.text();
-
-                if(oldData && oldData.startsWith("[")){
-
-                    reviews = JSON.parse(oldData);
-                }
+                reviews = JSON.parse(data);
             }
-
-        }catch(err){
-
-            reviews = [];
         }
 
-        let imageData = "";
+    }catch(e){
 
-        if(imageFile){
-
-            imageData = await compressImage(imageFile);
-        }
-
-        const newReview = {
-
-            name: name,
-
-            rating: "⭐".repeat(parseInt(rating)),
-
-            text: text,
-
-            image: imageData
-        };
-
-        reviews.unshift(newReview);
-
-        // SAVE ONLINE
-        const save = await fetch(API_URL, {
-
-            method: "POST",
-
-            headers:{
-                "Content-Type":"application/json"
-            },
-
-            body: JSON.stringify(reviews)
-        });
-
-        if(save.ok){
-
-            alert("Review submitted!");
-
-            // RESET
-            document.getElementById("reviewName").value = "";
-
-            document.getElementById("reviewRating").value = "";
-
-            document.getElementById("reviewText").value = "";
-
-            document.getElementById("reviewImage").value = "";
-
-            // RESET STARS
-            document.querySelectorAll(".star-rating span").forEach(star => {
-
-                star.style.color = "#ccc";
-            });
-
-            // REFRESH REVIEWS
-            displayReviews();
-
-        }else{
-
-            alert("Failed to save review.");
-        }
-
-    }catch(error){
-
-        console.error(error);
-
-        alert("Something went wrong.");
+        reviews = [];
     }
 
-    submitBtn.disabled = false;
+    let imageData = "";
 
-    submitBtn.innerHTML = "Submit Review";
+    if(imageFile){
+
+        imageData = await compressImage(imageFile);
+    }
+
+    const newReview = {
+
+        name:name,
+
+        rating:"⭐".repeat(rating),
+
+        text:text,
+
+        image:imageData
+    };
+
+    reviews.unshift(newReview);
+
+    await fetch(API_URL,{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify(reviews)
+    });
+
+    alert("Review submitted!");
+
+    displayReviews();
 }
 
-// DISPLAY REVIEWS
 async function displayReviews(){
 
     const container = document.getElementById("reviewsContainer");
@@ -192,26 +308,11 @@ async function displayReviews(){
 
         const response = await fetch(API_URL);
 
-        if(!response.ok){
-
-            container.innerHTML = `
-            <p class="loading-text">
-                No reviews yet.
-            </p>
-            `;
-
-            return;
-        }
-
         const data = await response.text();
 
-        if(!data || !data.startsWith("[")){
+        if(!data.startsWith("[")){
 
-            container.innerHTML = `
-            <p class="loading-text">
-                No reviews yet.
-            </p>
-            `;
+            container.innerHTML = "";
 
             return;
         }
@@ -220,7 +321,7 @@ async function displayReviews(){
 
         container.innerHTML = "";
 
-        reviews.forEach(review => {
+        reviews.forEach(review=>{
 
             let imageHTML = "";
 
@@ -235,31 +336,19 @@ async function displayReviews(){
 
             <div class="review-item">
 
-                <div class="review-profile">
-                    ${review.name.charAt(0).toUpperCase()}
+                <div class="review-name">
+                    ${review.name}
                 </div>
 
-                <div class="review-content">
-
-                    <div class="review-top">
-
-                        <div class="review-name">
-                            ${review.name}
-                        </div>
-
-                        <div class="review-stars">
-                            ${review.rating}
-                        </div>
-
-                    </div>
-
-                    <div class="review-text">
-                        ${review.text}
-                    </div>
-
-                    ${imageHTML}
-
+                <div class="review-stars">
+                    ${review.rating}
                 </div>
+
+                <div>
+                    ${review.text}
+                </div>
+
+                ${imageHTML}
 
             </div>
             `;
@@ -267,14 +356,11 @@ async function displayReviews(){
 
     }catch(error){
 
-        console.error(error);
-
-        container.innerHTML = `
-        <p class="loading-text">
-            Failed to load reviews.
-        </p>
-        `;
+        console.log(error);
     }
 }
 
 </script>
+
+</body>
+</html>
