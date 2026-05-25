@@ -172,14 +172,6 @@ header h1{
     line-height:1.7;
 }
 
-.review-image{
-    max-width: 100%;
-    height: auto;
-    max-height: 300px;
-    border-radius: 15px;
-    margin-top: 10px;
-}
-
 .loading-text{
     text-align: center;
     font-size: 18px;
@@ -222,7 +214,7 @@ header h1{
 </div>
 
 <script>
-// Ginawa nating POST at nilagyan ng safety checks para kahit walang laman ang database, hindi mag-e-error.
+// Ang iyong eksaktong KVDB URL
 const API_URL = "https://kvdb.io/BYz7cfcbgzkiw4pGvGfdpg/squirizo_key";
 
 window.onload = function(){
@@ -244,13 +236,13 @@ async function addReview(){
     submitBtn.innerHTML = "Submitting...";
 
     try {
-        // 1. Kumuha ng lumang data nang may matinding safety check
         let reviewsList = [];
+        
+        // 1. Subukan nating kunin ang lumang data
         try {
             let getResponse = await fetch(API_URL);
             if(getResponse.ok) {
                 let textData = await getResponse.text();
-                // Kung may laman at mukhang valid json array
                 if (textData && textData.trim().startsWith("[")) {
                     reviewsList = JSON.parse(textData);
                 }
@@ -261,13 +253,13 @@ async function addReview(){
 
         if(!Array.isArray(reviewsList)) reviewsList = [];
 
-        // 2. Idagdag ang bago mong review (text muna para siguradong pumasok!)
-        let newReview = { name, rating, text, image: "" };
+        // 2. Idagdag ang bago mong review
+        let newReview = { name, rating, text };
         reviewsList.unshift(newReview);
 
-        // 3. I-save pabalik gamit ang POST (Ito ang tamang paraan sa KVDB)
+        // 3. MAS MATATAG NA SUBMIT: Gagamit tayo ng PUT method para piliting gumawa ng key kung wala pa
         let putResponse = await fetch(API_URL, {
-            method: "POST", 
+            method: "PUT", 
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(reviewsList)
         });
@@ -278,4 +270,81 @@ async function addReview(){
             document.getElementById("reviewRating").value = "";
             document.getElementById("reviewText").value = "";
             
-            let stars = document
+            let stars = document.querySelectorAll(".star-rating span");
+            stars.forEach(star => star.classList.remove("active"));
+            
+            displayReviews();
+        } else {
+            alert("Database rejected the submit. Code: " + putResponse.status);
+        }
+    } catch (error) {
+        console.error(error);
+        alert("Something went wrong. Please try again.");
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "Submit Review";
+    }
+}
+
+async function displayReviews(){
+    let container = document.getElementById("reviewsContainer");
+
+    try {
+        let response = await fetch(API_URL);
+        if(!response.ok) {
+            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
+            return;
+        }
+        
+        let textData = await response.text();
+        if(!textData || !textData.trim().startsWith("[")) {
+            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
+            return;
+        }
+
+        let reviews = JSON.parse(textData);
+        container.innerHTML = "";
+
+        if(!reviews || reviews.length === 0){
+            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
+            return;
+        }
+
+        reviews.forEach(function(review){
+            let firstLetter = review.name ? review.name.charAt(0).toUpperCase() : "U";
+
+            container.innerHTML += `
+            <div class="review-item">
+                <div class="review-profile">${firstLetter}</div>
+                <div class="review-content">
+                    <div class="review-top">
+                        <div class="review-name">${review.name}</div>
+                        <div class="review-stars">${review.rating}</div>
+                    </div>
+                    <div class="review-text">${review.text}</div>
+                </div>
+            </div>
+            `;
+        });
+    } catch (error) {
+        console.error(error);
+        container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
+    }
+}
+
+function setRating(rating){
+    document.getElementById("reviewRating").value = rating;
+    let stars = document.querySelectorAll(".star-rating span");
+
+    stars.forEach((star, index) => {
+        if(index < rating.length){
+            star.classList.add("active");
+        }else{
+            star.classList.remove("active");
+        }
+    });
+}
+</script>
+
+</body>
+</html>
