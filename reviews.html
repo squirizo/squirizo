@@ -46,11 +46,6 @@ header h1{
     border-radius:50px;
     font-weight:bold;
     box-shadow:0 6px 15px rgba(0,0,0,0.15);
-    transition:0.3s;
-}
-
-.back-btn:hover{
-    transform:translateX(-5px);
 }
 
 /* REVIEW FORM */
@@ -106,7 +101,7 @@ header h1{
 .star-rating span{
     font-size:40px;
     cursor:pointer;
-    color: #ccc; /* Default gray pag di pa naka-click */
+    color: #ccc;
     transition: 0.2s;
     display: inline-block;
 }
@@ -135,7 +130,7 @@ header h1{
     background: linear-gradient(45deg, #ff6600, #ff944d);
     color:white;
     display:flex;
-    justify(content:center;
+    justify-content:center;
     align-items:center;
     font-size:24px;
     font-weight:bold;
@@ -220,10 +215,9 @@ header h1{
 </div>
 
 <script>
-// CORS Tulay para siguradong pumasok sa database niyo nang walang error
+// LIVE CLOUD DATABASE LINK NG BUCKET MO
 const BUCKET_ID = "BYz7cfcbgzkiw4pGvGfdpg";
-const KVDB_URL = `https://kvdb.io/${BUCKET_ID}/squirizo_reviews`;
-const PROXY_URL = "https://api.allorigins.win/raw?url=" + encodeURIComponent(KVDB_URL);
+const KVDB_URL = `https://kvdb.io/${BUCKET_ID}/squirizo_live_data`;
 
 window.onload = function(){
     displayReviews();
@@ -238,7 +232,7 @@ function compressImage(file) {
             img.src = event.target.result;
             img.onload = () => {
                 const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 300; 
+                const MAX_WIDTH = 250; 
                 const scaleSize = MAX_WIDTH / img.width;
                 canvas.width = MAX_WIDTH;
                 canvas.height = img.height * scaleSize;
@@ -246,7 +240,7 @@ function compressImage(file) {
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.4);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.3);
                 resolve(dataUrl);
             };
         };
@@ -265,16 +259,12 @@ async function addReview(){
         return;
     }
 
-    // Ginagawang Star strings ("⭐⭐⭐") base sa pinindot mong numero
     let ratingStars = "⭐".repeat(parseInt(ratingNum));
-
     submitBtn.disabled = true;
     submitBtn.innerHTML = "Submitting...";
 
     try {
         let imageDataBase64 = "";
-        
-        // Pweding may picture, pwedeng wala!
         if (imageFile) {
             try {
                 imageDataBase64 = await compressImage(imageFile);
@@ -285,30 +275,34 @@ async function addReview(){
 
         let reviewsList = [];
         
+        // Diretsong pagkuha sa KVDB gamit ang no-cors bypass mode
         try {
-            let getResponse = await fetch(PROXY_URL);
+            let getResponse = await fetch(KVDB_URL);
             if(getResponse.ok) {
-                let textData = await getResponse.text();
-                if (textData && textData.trim().startsWith("[")) {
-                    reviewsList = JSON.parse(textData);
+                let resText = await getResponse.text();
+                if (resText && resText.trim().startsWith("[")) {
+                    reviewsList = JSON.parse(resText);
                 }
             }
         } catch(e) {
             reviewsList = [];
         }
 
-        if(!Array.isArray(reviewsList)) reviewsList = [];
-
         let newReview = { name, rating: ratingStars, text, image: imageDataBase64 };
         reviewsList.unshift(newReview);
 
-        let putResponse = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(KVDB_URL), {
-            method: "POST", // Force create key sa KVDB
+        // MAPAPILITANG GUMAWA: Gumamit ng "PUT" nang walang proxy headers para tanggapin agad ng KVDB
+        let putResponse = await fetch(KVDB_URL, {
+            method: "PUT",
+            mode: "cors",
+            headers: {
+                "Content-Type": "text/plain" 
+            },
             body: JSON.stringify(reviewsList)
         });
 
-        if(putResponse.ok){
-            alert("Thank you! Your review has been saved online. ❤️");
+        if(putResponse.ok || putResponse.status === 200 || putResponse.status === 201){
+            alert("Thank you! Your review has been saved ONLINE. ❤️");
             document.getElementById("reviewName").value = "";
             document.getElementById("reviewRating").value = "";
             document.getElementById("reviewText").value = "";
@@ -319,11 +313,11 @@ async function addReview(){
             
             displayReviews();
         } else {
-            alert("Database Error. Failed to auto-create key.");
+            alert("Database Error. Response code: " + putResponse.status);
         }
     } catch (error) {
         console.error(error);
-        alert("Network Error. Please try again.");
+        alert("Network Sync Error. Please try again.");
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = "Submit Review";
@@ -334,15 +328,15 @@ async function displayReviews(){
     let container = document.getElementById("reviewsContainer");
 
     try {
-        let response = await fetch(PROXY_URL);
+        let response = await fetch(KVDB_URL);
         if(!response.ok) {
-            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
+            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one online!</p>';
             return;
         }
         
         let textData = await response.text();
         if(!textData || !textData.trim().startsWith("[")) {
-            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
+            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one online!</p>';
             return;
         }
 
@@ -350,13 +344,12 @@ async function displayReviews(){
         container.innerHTML = "";
 
         if(!reviews || reviews.length === 0){
-            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
+            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one online!</p>';
             return;
         }
 
         reviews.forEach(function(review){
             let firstLetter = review.name ? review.name.charAt(0).toUpperCase() : "U";
-            
             let imgTag = "";
             if (review.image && review.image.startsWith("data:image")) {
                 imgTag = `<img src="${review.image}" class="review-img-display">`;
@@ -378,20 +371,19 @@ async function displayReviews(){
         });
     } catch (error) {
         console.error(error);
-        container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
+        container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one online!</p>';
     }
 }
 
-// FIXED FUNCTION FOR STAR RATING CLICK
 function setRating(ratingValue){
     document.getElementById("reviewRating").value = ratingValue;
     let stars = document.querySelectorAll(".star-rating span");
 
     stars.forEach((star, index) => {
         if(index < ratingValue){
-            star.style.color = "gold"; // Nagiging gold kapag napili
+            star.style.color = "gold";
         }else{
-            star.style.color = "#ccc";  // Bumabalik sa gray kapag hindi kasama
+            star.style.color = "#ccc";
         }
     });
 }
