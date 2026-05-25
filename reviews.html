@@ -4,27 +4,143 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SQUIRIZO Reviews</title>
+
 <link rel="stylesheet" href="css.css">
+
 <style>
-*{ margin:0; padding:0; box-sizing:border-box; font-family:Arial, Helvetica, sans-serif; }
-body{ background: linear-gradient(135deg, #fff6ef, #fbe4d5); min-height:100vh; }
-header{ background: linear-gradient(90deg, #7b4b32, #a15c38); color:white; padding:25px; text-align:center; }
-header h1{ font-size:45px; }
-.back-btn{ display:inline-block; margin:25px; padding:12px 20px; background:#ff6600; color:white; text-decoration:none; border-radius:10px; }
-.review-form{ background:white; width:90%; max-width:550px; margin:auto; padding:35px; border-radius:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-.review-form h2{ text-align:center; margin-bottom:20px; }
-.review-form input, .review-form textarea{ width:100%; padding:15px; margin:10px 0; border-radius:10px; border:1px solid #ccc; font-size:16px; }
-.review-form button{ width:100%; padding:15px; border:none; background:#ff6600; color:white; border-radius:10px; cursor:pointer; font-weight: bold; font-size: 16px; }
-.star-rating{ text-align:center; margin:15px 0; }
-.star-rating span{ font-size:40px; cursor:pointer; color:#ccc; display: inline-block; transition: 0.2s; }
-.reviews-list{ width:90%; max-width:900px; margin:40px auto; }
-.review-item{ background:white; padding:20px; border-radius:20px; margin-bottom:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-.review-stars{ color:gold; margin-bottom:10px; font-size: 18px; }
-.review-name{ font-weight:bold; margin-bottom:10px; font-size: 18px; color: #333; }
-.review-text { font-size: 16px; color: #555; line-height: 1.5; }
-.loading-text { text-align: center; color: #7b4b32; font-weight: bold; font-size: 18px; }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background: linear-gradient(135deg, #fff6ef, #fbe4d5);
+    min-height:100vh;
+}
+
+header{
+    background: linear-gradient(90deg, #7b4b32, #a15c38);
+    color:white;
+    padding:25px;
+    text-align:center;
+}
+
+header h1{
+    font-size:45px;
+}
+
+.back-btn{
+    display:inline-block;
+    margin:25px;
+    padding:12px 20px;
+    background:#ff6600;
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+}
+
+.review-form{
+    background:white;
+    width:90%;
+    max-width:550px;
+    margin:auto;
+    padding:35px;
+    border-radius:20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.review-form h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.review-form input,
+.review-form textarea{
+    width:100%;
+    padding:15px;
+    margin:10px 0;
+    border-radius:10px;
+    border:1px solid #ccc;
+    font-size:16px;
+}
+
+.review-form button{
+    width:100%;
+    padding:15px;
+    border:none;
+    background:#ff6600;
+    color:white;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.star-rating{
+    text-align:center;
+    margin:15px 0;
+}
+
+.star-rating span{
+    font-size:40px;
+    cursor:pointer;
+    color:#ccc;
+    display: inline-block;
+    transition: 0.2s;
+}
+
+.reviews-list{
+    width:90%;
+    max-width:900px;
+    margin:40px auto;
+}
+
+.review-item{
+    background:white;
+    padding:20px;
+    border-radius:20px;
+    margin-bottom:20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.review-stars{
+    color:gold;
+    margin-bottom:10px;
+    font-size: 18px;
+}
+
+.review-name{
+    font-weight:bold;
+    margin-bottom:10px;
+    font-size: 18px;
+    color: #333;
+}
+
+.review-text {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.5;
+}
+
+.review-img-display{
+    max-width:100%;
+    max-height: 250px;
+    margin-top:15px;
+    border-radius:10px;
+    display: block;
+}
+
+.loading-text {
+    text-align: center;
+    color: #7b4b32;
+    font-weight: bold;
+    font-size: 18px;
+}
 </style>
 </head>
+
 <body>
 
 <header>
@@ -35,7 +151,9 @@ header h1{ font-size:45px; }
 
 <div class="review-form">
     <h2>Leave a Review</h2>
+
     <input type="text" id="reviewName" placeholder="Enter Your Name">
+
     <div class="star-rating">
         <span onclick="setRating(1)">★</span>
         <span onclick="setRating(2)">★</span>
@@ -43,8 +161,13 @@ header h1{ font-size:45px; }
         <span onclick="setRating(4)">★</span>
         <span onclick="setRating(5)">★</span>
     </div>
+
     <input type="hidden" id="reviewRating" value="">
+
     <textarea id="reviewText" rows="5" placeholder="Write your review here..."></textarea>
+
+    <input type="file" id="reviewImage" accept="image/*">
+
     <button onclick="addReview()" id="submitBtn">Submit Review</button>
 </div>
 
@@ -64,7 +187,32 @@ function setRating(value){
     document.getElementById("reviewRating").value = value;
     let stars = document.querySelectorAll(".star-rating span");
     stars.forEach((star, index)=>{
-        star.style.color = (index < value) ? "gold" : "#ccc";
+        if(index < value){
+            star.style.color = "gold";
+        }else{
+            star.style.color = "#ccc";
+        }
+    });
+}
+
+function compressImage(file){
+    return new Promise((resolve)=>{
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(event){
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = function(){
+                const canvas = document.createElement("canvas");
+                const MAX_WIDTH = 200; // Pinaliit ko para siguradong hindi mag-failed sa gaan
+                const scale = MAX_WIDTH / img.width;
+                canvas.width = MAX_WIDTH;
+                canvas.height = img.height * scale;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                resolve(canvas.toDataURL("image/jpeg", 0.4));
+            };
+        };
     });
 }
 
@@ -72,6 +220,7 @@ async function addReview() {
     let name = document.getElementById("reviewName").value.trim();
     let ratingNum = document.getElementById("reviewRating").value;
     let text = document.getElementById("reviewText").value.trim();
+    let imageFile = document.getElementById("reviewImage").files[0];
     let submitBtn = document.getElementById("submitBtn");
 
     if(name === "" || ratingNum === "" || text === ""){
@@ -84,7 +233,14 @@ async function addReview() {
     submitBtn.innerHTML = "Submitting...";
 
     try {
+        let imageDataBase64 = "";
+        if(imageFile){
+            imageDataBase64 = await compressImage(imageFile);
+        }
+
         let reviewsList = [];
+
+        // 1. Kunin ang lumang reviews
         try {
             let response = await fetch(API_URL);
             if(response.ok){
@@ -99,25 +255,34 @@ async function addReview() {
 
         if(!Array.isArray(reviewsList)) reviewsList = [];
 
-        let newReview = { name, rating: ratingStars, text };
+        // 2. Ipasok ang bago
+        let newReview = { name, rating: ratingStars, text, image: imageDataBase64 };
         reviewsList.unshift(newReview);
 
+        // 3. TAMA AT REKTA: PUT method para i-overwrite ang database list nang tama
         let saveResponse = await fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify(reviewsList)
         });
 
         if(saveResponse.ok){
-            alert("Review submitted successfully! ❤️");
+            alert("Review saved online successfully! ❤️");
+            
+            // I-clear ang porma
             document.getElementById("reviewName").value = "";
             document.getElementById("reviewRating").value = "";
             document.getElementById("reviewText").value = "";
+            document.getElementById("reviewImage").value = "";
             let stars = document.querySelectorAll(".star-rating span");
             stars.forEach(star => star.style.color = "#ccc");
+
+            // I-refresh ang display
             displayReviews();
         } else {
-            alert("Failed to save review online.");
+            alert("Failed to save review online. Server Error.");
         }
     } catch(error) {
         console.error(error);
@@ -130,37 +295,51 @@ async function addReview() {
 
 async function displayReviews(){
     const container = document.getElementById("reviewsContainer");
+
     try{
         const response = await fetch(API_URL);
         if(!response.ok) {
             container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
             return;
         }
+
         const data = await response.text();
+
         if(!data || !data.trim().startsWith("[")){
             container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
             return;
         }
+
         const reviews = JSON.parse(data);
         container.innerHTML = "";
+
         if(reviews.length === 0) {
             container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
             return;
         }
+
         reviews.forEach(review => {
+            let imageHTML = "";
+            if(review.image && review.image.startsWith("data:image")){
+                imageHTML = `<img src="${review.image}" class="review-img-display">`;
+            }
+
             container.innerHTML += `
             <div class="review-item">
                 <div class="review-name">${review.name}</div>
                 <div class="review-stars">${review.rating}</div>
                 <div class="review-text">${review.text}</div>
+                ${imageHTML}
             </div>
             `;
         });
+
     }catch(error){
         console.error(error);
         container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
     }
 }
 </script>
+
 </body>
 </html>
