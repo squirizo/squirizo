@@ -239,7 +239,7 @@ async function addReview() {
 
         let reviewsList = [];
 
-        // 1. KUNIN ANG KASALUKUYANG REVIEWS MULA SA LIVE DB
+        // Kumuha ng lumang database content
         try {
             let response = await fetch(API_URL);
             if(response.ok){
@@ -252,14 +252,13 @@ async function addReview() {
             reviewsList = [];
         }
 
-        // Siguraduhing array ang format
         if(!Array.isArray(reviewsList)) reviewsList = [];
 
-        // 2. ISINGIT ANG BAGONG REVIEW SA PINAKATAAS
+        // Idagdag ang bago sa unahan
         let newReview = { name, rating: ratingStars, text, image: imageDataBase64 };
         reviewsList.unshift(newReview);
 
-        // 3. I-SAVE ANG BUONG LISTAHAN PABALIK SA KVDB ONLINE
+        // I-save online sa KVDB
         let saveResponse = await fetch(API_URL, {
             method: "POST",
             headers: {
@@ -271,7 +270,7 @@ async function addReview() {
         if(saveResponse.ok){
             alert("Review submitted successfully! ❤️");
             
-            // I-clear ang inputs para sa susunod na customer
+            // I-reset ang nag-iisang form
             document.getElementById("reviewName").value = "";
             document.getElementById("reviewRating").value = "";
             document.getElementById("reviewText").value = "";
@@ -279,7 +278,6 @@ async function addReview() {
             let stars = document.querySelectorAll(".star-rating span");
             stars.forEach(star => star.style.color = "#ccc");
 
-            // I-RELOAD AGAD ANG MGA REVIEW PARA LUMITAW SA BABA
             displayReviews();
         } else {
             alert("Failed to save review online.");
@@ -305,7 +303,6 @@ async function displayReviews(){
 
         const data = await response.text();
 
-        // Kung walang data o hindi valid na JSON list, ihinto
         if(!data || !data.trim().startsWith("[")){
             container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
             return;
@@ -319,7 +316,6 @@ async function displayReviews(){
             return;
         }
 
-        // I-render ang bawat review para makita ng lahat ng customers
         reviews.forEach(review => {
             let imageHTML = "";
             if(review.image && review.image.startsWith("data:image")){
