@@ -215,9 +215,13 @@ header h1{
 </div>
 
 <script>
-// LIVE CLOUD DATABASE LINK NG BUCKET MO
+// TOTOONG ONLINE CLOUD STORAGE BUCKET MO
 const BUCKET_ID = "BYz7cfcbgzkiw4pGvGfdpg";
-const KVDB_URL = `https://kvdb.io/${BUCKET_ID}/squirizo_live_data`;
+const KVDB_KEY_URL = `https://kvdb.io/${BUCKET_ID}/squirizo_live_data`;
+
+// CORS Proxy para hindi i-block ng browser ang online submission mo papuntang KVDB
+const PROXY_GET = "https://api.allorigins.win/raw?url=" + encodeURIComponent(KVDB_KEY_URL);
+const PROXY_POST = "https://api.allorigins.win/raw?url=" + encodeURIComponent(KVDB_KEY_URL);
 
 window.onload = function(){
     displayReviews();
@@ -275,9 +279,9 @@ async function addReview(){
 
         let reviewsList = [];
         
-        // Diretsong pagkuha sa KVDB gamit ang no-cors bypass mode
+        // Pagkuha ng lumang data online gamit ang Proxy
         try {
-            let getResponse = await fetch(KVDB_URL);
+            let getResponse = await fetch(PROXY_GET + "&nocache=" + Date.now());
             if(getResponse.ok) {
                 let resText = await getResponse.text();
                 if (resText && resText.trim().startsWith("[")) {
@@ -288,20 +292,18 @@ async function addReview(){
             reviewsList = [];
         }
 
+        if(!Array.isArray(reviewsList)) reviewsList = [];
+
         let newReview = { name, rating: ratingStars, text, image: imageDataBase64 };
         reviewsList.unshift(newReview);
 
-        // MAPAPILITANG GUMAWA: Gumamit ng "PUT" nang walang proxy headers para tanggapin agad ng KVDB
-        let putResponse = await fetch(KVDB_URL, {
-            method: "PUT",
-            mode: "cors",
-            headers: {
-                "Content-Type": "text/plain" 
-            },
+        // Ligtas na pag-save gamit ang POST tunnel bypass sa proxy para iwas proxy crash o block
+        let putResponse = await fetch(PROXY_POST, {
+            method: "POST",
             body: JSON.stringify(reviewsList)
         });
 
-        if(putResponse.ok || putResponse.status === 200 || putResponse.status === 201){
+        if(putResponse.ok){
             alert("Thank you! Your review has been saved ONLINE. ❤️");
             document.getElementById("reviewName").value = "";
             document.getElementById("reviewRating").value = "";
@@ -311,9 +313,10 @@ async function addReview(){
             let stars = document.querySelectorAll(".star-rating span");
             stars.forEach(star => star.style.color = "#ccc");
             
-            displayReviews();
+            // Bigyan ng 1 segundong break ang cloud para mag-sync bago i-refresh ang display
+            setTimeout(displayReviews, 1000);
         } else {
-            alert("Database Error. Response code: " + putResponse.status);
+            alert("Database Error. Please try again.");
         }
     } catch (error) {
         console.error(error);
@@ -328,7 +331,7 @@ async function displayReviews(){
     let container = document.getElementById("reviewsContainer");
 
     try {
-        let response = await fetch(KVDB_URL);
+        let response = await fetch(PROXY_GET + "&nocache=" + Date.now());
         if(!response.ok) {
             container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one online!</p>';
             return;
