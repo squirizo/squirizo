@@ -2,115 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SQUIRIZO Reviews</title>
     <style>
-        /* (Gamitin mo yung magandang CSS mo sa itaas, nilagay ko lang dito yung kailangan para sa display) */
-        body { background: linear-gradient(135deg, #fff6ef, #fbe4d5); min-height: 100vh; font-family: Arial; }
-        .review-item { background: white; padding: 20px; border-radius: 20px; margin-bottom: 20px; display: flex; gap: 15px; }
-        .review-profile { width: 50px; height: 50px; background: #ff6600; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .review-img { max-width: 200px; display: block; margin-top: 10px; border-radius: 10px; }
-        .star-rating span { cursor: pointer; font-size: 30px; color: #ccc; }
-        .star-rating span.active { color: gold; }
+        /* (Idagdag mo rito 'yung magandang CSS mo dati) */
+        body { font-family: sans-serif; background: #fbe4d5; padding: 20px; }
+        .review-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-<header><h1>SQUIRIZO REVIEWS</h1></header>
-<a href="index.html" class="back-btn">← Back to Home</a>
-
 <div class="review-form">
-    <input type="text" id="reviewName" placeholder="Enter Your Name">
-    <div class="star-rating" id="starRating">
-        <span onclick="setRating(1)">★</span>
-        <span onclick="setRating(2)">★</span>
-        <span onclick="setRating(3)">★</span>
-        <span onclick="setRating(4)">★</span>
-        <span onclick="setRating(5)">★</span>
-    </div>
-    <input type="hidden" id="reviewRating" value="0">
-    <textarea id="reviewText" placeholder="Write your review here..." rows="5"></textarea>
-    <input type="file" id="reviewImage" accept="image/*">
-    <button onclick="submitOnlineReview()" id="submitBtn">Submit Review</button>
+    <input type="text" id="name" placeholder="Name">
+    <textarea id="text" placeholder="Review"></textarea>
+    <input type="file" id="image">
+    <button onclick="saveReview()" id="btn">Submit</button>
 </div>
 
-<div class="reviews-list" id="reviewsContainer">Loading reviews...</div>
+<div id="display"></div>
 
 <script>
-// I-setup ang iyong KVDB bucket (Palitan mo ito ng sarili mong key kung mayroon ka na)
-const BUCKET_ID = "BYz7cfcbgzkiw4pGvGfdpg"; 
-const API_URL = `https://kvdb.io/${BUCKET_ID}/squirizo_live_data`;
+// --- PALITAN MO ITO NG API URL MULA SA SHEETDB.IO ---
+const API_URL = "https://sheetdb.io/api/v1/iy22k2841p999"; 
 
-window.onload = displayReviews;
+async function saveReview() {
+    const btn = document.getElementById("btn");
+    btn.disabled = true; btn.innerText = "Saving...";
 
-function setRating(val) {
-    document.getElementById("reviewRating").value = val;
-    let stars = document.querySelectorAll("#starRating span");
-    stars.forEach((s, i) => s.className = i < val ? "active" : "");
-}
-
-async function submitOnlineReview() {
-    const btn = document.getElementById("submitBtn");
-    const name = document.getElementById("reviewName").value;
-    const rating = document.getElementById("reviewRating").value;
-    const text = document.getElementById("reviewText").value;
-    const file = document.getElementById("reviewImage").files[0];
-
-    if (!name || !rating || !text) return alert("Fill all fields!");
-    btn.innerText = "Saving...";
-    btn.disabled = true;
-
+    const name = document.getElementById("name").value;
+    const text = document.getElementById("text").value;
+    const file = document.getElementById("image").files[0];
+    
     let imageBase64 = "";
     if (file) {
-        imageBase64 = await new Promise(res => {
-            let r = new FileReader();
-            r.onload = e => res(e.target.result);
-            r.readAsDataURL(file);
-        });
+        imageBase64 = await new Promise(r => { let reader = new FileReader(); reader.onload = e => r(e.target.result); reader.readAsDataURL(file); });
     }
 
-    // 1. Kuhanin muna ang existing data
-    let currentData = [];
-    try {
-        let res = await fetch(API_URL);
-        if (res.ok) currentData = await res.json();
-    } catch (e) {}
-
-    // 2. I-push ang bago
-    currentData.unshift({ name, rating: "⭐".repeat(rating), text, image: imageBase64 });
-
-    // 3. I-save online (PUT request)
+    // Direct POST sa Google Sheet
     await fetch(API_URL, {
-        method: "PUT",
-        body: JSON.stringify(currentData),
-        headers: {'Content-Type': 'application/json'}
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ data: [{ name, rating: "5 stars", text, image: imageBase64 }] })
     });
 
-    btn.innerText = "Submit Review";
-    btn.disabled = false;
-    displayReviews();
+    btn.disabled = false; btn.innerText = "Submit";
+    location.reload();
 }
 
-async function displayReviews() {
-    const container = document.getElementById("reviewsContainer");
-    try {
-        let res = await fetch(API_URL);
-        let reviews = await res.json();
-        container.innerHTML = reviews.map(r => `
-            <div class="review-item">
-                <div class="review-profile">${r.name[0]}</div>
-                <div>
-                    <strong>${r.name}</strong><br>
-                    ${r.rating}<br>
-                    ${r.text}
-                    ${r.image ? `<img src="${r.image}" class="review-img">` : ""}
-                </div>
-            </div>
-        `).join("");
-    } catch (e) {
-        container.innerHTML = "No reviews yet.";
-    }
+async function loadReviews() {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    document.getElementById("display").innerHTML = data.map(r => `
+        <div class="review-item">
+            <strong>${r.name}</strong><p>${r.text}</p>
+            ${r.image ? `<img src="${r.image}" width="100">` : ""}
+        </div>
+    `).join("");
 }
+
+loadReviews();
 </script>
 </body>
 </html>
