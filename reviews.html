@@ -288,17 +288,18 @@ header h1{
 </div>
 
 <div class="reviews-list" id="reviewsContainer">
-    <p class="loading-text">Loading reviews from database...</p>
+    <p class="loading-text">Loading reviews...</p>
 </div>
 
 <script>
-const API_URL = "http://localhost/entrep/reviews_api.php"; 
+// PALITAN MO ITO NG MGA DETALYE MULA SA ACCOUNT MO SA JSONBIN.IO
+const BIN_ID = "ILAGAY_DITO_ANG_BIN_ID"; 
+const MASTER_KEY = "ILAGAY_DITO_ANG_MASTER_KEY"; 
 
 window.onload = function(){
     displayReviews();
 }
 
-// ADD REVIEW PROCESSOR
 function addReview(){
     let name = document.getElementById("reviewName").value.trim();
     let rating = document.getElementById("reviewRating").value;
@@ -313,42 +314,46 @@ function addReview(){
     }
 
     submitBtn.disabled = true;
-    submitBtn.innerHTML = "Submitting Review...";
+    submitBtn.innerHTML = "Submitting...";
 
     if(file){
         let reader = new FileReader();
         reader.onload = function(e){
-            saveReviewToMySQL(name, rating, text, e.target.result);
+            saveReviewToCloud(name, rating, text, e.target.result);
         };
         reader.readAsDataURL(file);
     }else{
-        saveReviewToMySQL(name, rating, text, "");
+        saveReviewToCloud(name, rating, text, "");
     }
 }
 
-// SAVE DATA TO MYSQL VIA PHP
-async function saveReviewToMySQL(name, rating, text, image){
+async function saveReviewToCloud(name, rating, text, image){
     let submitBtn = document.getElementById("submitBtn");
 
     try {
-        let response = await fetch(API_URL, {
-            method: "POST",
+        // 1. KUKUNIN MUNA ANG KASALUKUYANG MGA REVIEWS MULA SA CLOUD
+        let getResponse = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+            headers: { "X-Master-Key": MASTER_KEY }
+        });
+        let currentData = await getResponse.json();
+        let reviewsList = Array.isArray(currentData.record) ? currentData.record : [];
+
+        // 2. IDADAGDAG ANG BAGONG REVIEW SA LISTAHAN
+        let newReview = { name, rating, text, image };
+        reviewsList.unshift(newReview); // unshift para nasa unahan lagi ang bago
+
+        // 3. I-UUPDATE AT I-SASESAVE PABALIK SA CLOUD
+        let putResponse = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+            method: "PUT",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "X-Master-Key": MASTER_KEY
             },
-            body: JSON.stringify({
-                name: name,
-                rating: rating,
-                text: text,
-                image: image
-            })
+            body: JSON.stringify(reviewsList)
         });
 
-        let result = await response.json();
-
-        if(result.status === "success"){
-            alert("Thank you! Your review has been saved to the MySQL database. ❤️");
-            
+        if(putResponse.ok){
+            alert("Thank you! Your review has been saved online. ❤️");
             document.getElementById("reviewName").value = "";
             document.getElementById("reviewRating").value = "";
             document.getElementById("reviewText").value = "";
@@ -359,26 +364,27 @@ async function saveReviewToMySQL(name, rating, text, image){
             
             displayReviews();
         } else {
-            alert("Failed to save review to database.");
+            alert("Failed to submit review.");
         }
     } catch (error) {
-        console.error("Database Error:", error);
-        alert("Could not connect to the local server.");
+        console.error(error);
+        alert("Network Error. Please try again.");
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = "Submit Review";
     }
 }
 
-// FETCH AND DISPLAY REVIEWS FROM MYSQL
 async function displayReviews(){
     let container = document.getElementById("reviewsContainer");
 
     try {
-        let response = await fetch(API_URL);
-        if(!response.ok) throw new Error("Fetch failed");
-
-        let reviews = await response.json();
+        let response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+            headers: { "X-Master-Key": MASTER_KEY }
+        });
+        
+        let data = await response.json();
+        let reviews = Array.isArray(data.record) ? data.record : [];
         container.innerHTML = "";
 
         if(reviews.length === 0){
@@ -404,12 +410,11 @@ async function displayReviews(){
             `;
         });
     } catch (error) {
-        console.error("Display Error:", error);
-        container.innerHTML = '<p class="loading-text" style="color:red;">Error loading reviews from database.</p>';
+        console.error(error);
+        container.innerHTML = '<p class="loading-text" style="color:red;">Error loading reviews.</p>';
     }
 }
 
-// STAR RATING ANIMATION HANDLER
 function setRating(rating){
     document.getElementById("reviewRating").value = rating;
     let stars = document.querySelectorAll(".star-rating span");
