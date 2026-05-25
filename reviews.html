@@ -83,6 +83,13 @@ header h1{
     font-size:16px;
 }
 
+/* FILE INPUT BUTTON STYLE */
+.review-form input[type="file"] {
+    background: #fdfaf7;
+    cursor: pointer;
+    padding: 10px;
+}
+
 /* BUTTON */
 .review-form button{
     width:100%;
@@ -170,6 +177,16 @@ header h1{
 .review-text{
     color:#555;
     line-height:1.7;
+    margin-bottom: 10px;
+}
+
+.review-img-display{
+    max-width: 100%;
+    max-height: 250px;
+    border-radius: 12px;
+    margin-top: 10px;
+    display: block;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .loading-text{
@@ -195,156 +212,4 @@ header h1{
     <input type="text" id="reviewName" placeholder="Enter Your Name">
 
     <div class="star-rating">
-        <span onclick="setRating('⭐')">★</span>
-        <span onclick="setRating('⭐⭐')">★</span>
-        <span onclick="setRating('⭐⭐⭐')">★</span>
-        <span onclick="setRating('⭐⭐⭐⭐')">★</span>
-        <span onclick="setRating('⭐⭐⭐⭐⭐')">★</span>
-    </div>
-    
-    <input type="hidden" id="reviewRating">
-
-    <textarea id="reviewText" placeholder="Write your review here..." rows="5"></textarea>
-    
-    <button id="submitBtn" onclick="addReview()">Submit Review</button>
-</div>
-
-<div class="reviews-list" id="reviewsContainer">
-    <p class="loading-text">Loading reviews...</p>
-</div>
-
-<script>
-// Ang iyong eksaktong KVDB URL
-const API_URL = "https://kvdb.io/BYz7cfcbgzkiw4pGvGfdpg/squirizo_key";
-
-window.onload = function(){
-    displayReviews();
-}
-
-async function addReview(){
-    let name = document.getElementById("reviewName").value.trim();
-    let rating = document.getElementById("reviewRating").value;
-    let text = document.getElementById("reviewText").value.trim();
-    let submitBtn = document.getElementById("submitBtn");
-
-    if(name === "" || rating === "" || text === ""){
-        alert("Please fill up all fields!");
-        return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = "Submitting...";
-
-    try {
-        let reviewsList = [];
-        
-        // 1. Subukan nating kunin ang lumang data
-        try {
-            let getResponse = await fetch(API_URL);
-            if(getResponse.ok) {
-                let textData = await getResponse.text();
-                if (textData && textData.trim().startsWith("[")) {
-                    reviewsList = JSON.parse(textData);
-                }
-            }
-        } catch(e) {
-            reviewsList = [];
-        }
-
-        if(!Array.isArray(reviewsList)) reviewsList = [];
-
-        // 2. Idagdag ang bago mong review
-        let newReview = { name, rating, text };
-        reviewsList.unshift(newReview);
-
-        // 3. MAS MATATAG NA SUBMIT: Gagamit tayo ng PUT method para piliting gumawa ng key kung wala pa
-        let putResponse = await fetch(API_URL, {
-            method: "PUT", 
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(reviewsList)
-        });
-
-        if(putResponse.ok){
-            alert("Thank you! Your review has been saved online. ❤️");
-            document.getElementById("reviewName").value = "";
-            document.getElementById("reviewRating").value = "";
-            document.getElementById("reviewText").value = "";
-            
-            let stars = document.querySelectorAll(".star-rating span");
-            stars.forEach(star => star.classList.remove("active"));
-            
-            displayReviews();
-        } else {
-            alert("Database rejected the submit. Code: " + putResponse.status);
-        }
-    } catch (error) {
-        console.error(error);
-        alert("Something went wrong. Please try again.");
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = "Submit Review";
-    }
-}
-
-async function displayReviews(){
-    let container = document.getElementById("reviewsContainer");
-
-    try {
-        let response = await fetch(API_URL);
-        if(!response.ok) {
-            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
-            return;
-        }
-        
-        let textData = await response.text();
-        if(!textData || !textData.trim().startsWith("[")) {
-            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
-            return;
-        }
-
-        let reviews = JSON.parse(textData);
-        container.innerHTML = "";
-
-        if(!reviews || reviews.length === 0){
-            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
-            return;
-        }
-
-        reviews.forEach(function(review){
-            let firstLetter = review.name ? review.name.charAt(0).toUpperCase() : "U";
-
-            container.innerHTML += `
-            <div class="review-item">
-                <div class="review-profile">${firstLetter}</div>
-                <div class="review-content">
-                    <div class="review-top">
-                        <div class="review-name">${review.name}</div>
-                        <div class="review-stars">${review.rating}</div>
-                    </div>
-                    <div class="review-text">${review.text}</div>
-                </div>
-            </div>
-            `;
-        });
-    } catch (error) {
-        console.error(error);
-        container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one!</p>';
-    }
-}
-
-function setRating(rating){
-    document.getElementById("reviewRating").value = rating;
-    let stars = document.querySelectorAll(".star-rating span");
-
-    stars.forEach((star, index) => {
-        if(index < rating.length){
-            star.classList.add("active");
-        }else{
-            star.classList.remove("active");
-        }
-    });
-}
-</script>
-
-</body>
-</html>
+        <span onclick="setRating('⭐
