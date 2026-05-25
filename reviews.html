@@ -5,17 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SQUIRIZO Reviews</title>
     <style>
-        /* DESIGN NA GUSTO MO */
-        body { background: #fffaf5; font-family: 'Segoe UI', Tahoma, sans-serif; padding: 20px; color: #444; }
-        .review-form { background: white; padding: 30px; border-radius: 25px; max-width: 500px; margin: 40px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center; }
-        h2 { color: #7b4b32; margin-bottom: 20px; }
-        input, textarea { width: 100%; margin: 10px 0; padding: 15px; border-radius: 12px; border: 1px solid #ddd; box-sizing: border-box; font-size: 16px; }
-        .star-container { margin: 10px 0; cursor: pointer; color: #ccc; font-size: 30px; }
-        .star-container .active { color: #ff9900; }
-        button { background: #ff6600; color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 15px; transition: 0.3s; }
-        button:hover { background: #e65c00; transform: translateY(-2px); }
-        .review-item { background: white; padding: 20px; border-radius: 20px; margin: 20px auto; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .review-img { max-width: 150px; display: block; margin-top: 10px; border-radius: 10px; }
+        body { background: #fffaf5; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+        .review-form { background: white; padding: 25px; border-radius: 20px; max-width: 500px; margin: 20px auto; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        input, textarea { width: 100%; margin: 10px 0; padding: 12px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; }
+        button { background: #ff6600; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .review-item { background: white; padding: 15px; border-radius: 15px; margin: 15px auto; max-width: 500px; border-left: 5px solid #ff6600; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
@@ -23,68 +17,34 @@
 <div class="review-form">
     <h2>Leave a Review</h2>
     <input type="text" id="name" placeholder="Enter Your Name">
-    
-    <div class="star-container" id="stars">
-        <span onclick="setRating(1)">★</span><span onclick="setRating(2)">★</span><span onclick="setRating(3)">★</span><span onclick="setRating(4)">★</span><span onclick="setRating(5)">★</span>
-    </div>
-    <input type="hidden" id="rating" value="5">
-
-    <textarea id="text" placeholder="Write your review here..." rows="4"></textarea>
-    <input type="file" id="image" style="padding: 10px 0;">
-    <button onclick="saveReview()" id="btn">Submit Review</button>
+    <textarea id="text" placeholder="Write your review here..." rows="3"></textarea>
+    <button onclick="addReview()">Submit Review</button>
 </div>
 
 <div id="display"></div>
 
 <script>
-const API_URL = "https://sheetdb.io/api/v1/zxmdtvlmdyb9u"; 
-
-// Star Rating Logic
-function setRating(val) {
-    document.getElementById("rating").value = val;
-    document.querySelectorAll(".star-container span").forEach((s, i) => {
-        s.className = i < val ? "active" : "";
-    });
-}
-
-async function saveReview() {
-    const btn = document.getElementById("btn");
-    btn.disabled = true; btn.innerText = "Saving...";
+function addReview() {
     const name = document.getElementById("name").value;
-    const rating = document.getElementById("rating").value;
     const text = document.getElementById("text").value;
-    const file = document.getElementById("image").files[0];
     
-    let imageBase64 = "";
-    if (file) {
-        imageBase64 = await new Promise(r => { let reader = new FileReader(); reader.onload = e => r(e.target.result); reader.readAsDataURL(file); });
-    }
+    if(!name || !text) return alert("Please fill in the fields.");
 
-    try {
-        await fetch(API_URL, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ data: [{ name, rating, text, image: imageBase64 }] })
-        });
-        location.reload();
-    } catch(e) { alert("Error saving review."); }
+    // Gagawa tayo ng object para sa review
+    const review = { name, text };
+    
+    // I-save sa display nang direkta (Temporary lang para sa presentation)
+    const display = document.getElementById("display");
+    const div = document.createElement("div");
+    div.className = "review-item";
+    div.innerHTML = `<strong>${name}</strong><p>${text}</p>`;
+    display.prepend(div);
+    
+    // Clear inputs
+    document.getElementById("name").value = "";
+    document.getElementById("text").value = "";
+    alert("Review submitted!");
 }
-
-async function loadReviews() {
-    try {
-        const res = await fetch(API_URL);
-        const data = await res.json();
-        document.getElementById("display").innerHTML = data.map(r => `
-            <div class="review-item">
-                <strong style="color: #ff9900;">${"★".repeat(r.rating || 5)}</strong><br>
-                <strong>${r.name}</strong>
-                <p>${r.text}</p>
-                ${r.image ? `<img src="${r.image}" class="review-img">` : ""}
-            </div>
-        `).join("");
-    } catch(e) { document.getElementById("display").innerHTML = "<p style='text-align:center'>No reviews yet.</p>"; }
-}
-loadReviews();
 </script>
 </body>
 </html>
