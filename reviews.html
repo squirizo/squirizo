@@ -219,9 +219,7 @@ header h1{
 const BUCKET_ID = "BYz7cfcbgzkiw4pGvGfdpg";
 const KVDB_KEY_URL = `https://kvdb.io/${BUCKET_ID}/squirizo_live_data`;
 
-// CORS Proxy para hindi i-block ng browser ang online submission mo papuntang KVDB
-const PROXY_GET = "https://api.allorigins.win/raw?url=" + encodeURIComponent(KVDB_KEY_URL);
-const PROXY_POST = "https://api.allorigins.win/raw?url=" + encodeURIComponent(KVDB_KEY_URL);
+const API_URL = `https://kvdb.io/${BUCKET_ID}/squirizo_live_data`;
 
 window.onload = function(){
     displayReviews();
@@ -259,13 +257,87 @@ async function addReview(){
     let submitBtn = document.getElementById("submitBtn");
 
     if(name === "" || ratingNum === "" || text === ""){
-        alert("Please fill up all fields and click on the stars!");
+        alert("Please fill up all fields!");
         return;
     }
 
     let ratingStars = "⭐".repeat(parseInt(ratingNum));
+
     submitBtn.disabled = true;
     submitBtn.innerHTML = "Submitting...";
+
+    try{
+
+        let imageDataBase64 = "";
+
+        if(imageFile){
+            imageDataBase64 = await compressImage(imageFile);
+        }
+
+        let reviewsList = [];
+
+        // GET EXISTING REVIEWS
+        try{
+            let response = await fetch(API_URL);
+
+            if(response.ok){
+                let textData = await response.text();
+
+                if(textData && textData.startsWith("[")){
+                    reviewsList = JSON.parse(textData);
+                }
+            }
+        }catch(err){
+            reviewsList = [];
+        }
+
+        let newReview = {
+            name,
+            rating: ratingStars,
+            text,
+            image: imageDataBase64
+        };
+
+        reviewsList.unshift(newReview);
+
+        // SAVE TO KVDB
+        let saveResponse = await fetch(API_URL, {
+            method: "POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify(reviewsList)
+        });
+
+        if(saveResponse.ok){
+
+            alert("Review submitted successfully!");
+
+            document.getElementById("reviewName").value = "";
+            document.getElementById("reviewRating").value = "";
+            document.getElementById("reviewText").value = "";
+            document.getElementById("reviewImage").value = "";
+
+            let stars = document.querySelectorAll(".star-rating span");
+
+            stars.forEach(star=>{
+                star.style.color = "#ccc";
+            });
+
+            displayReviews();
+
+        }else{
+            alert("Failed to save review.");
+        }
+
+    }catch(error){
+        console.error(error);
+        alert("Error submitting review.");
+    }
+
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = "Submit Review";
+}
 
     try {
         let imageDataBase64 = "";
@@ -328,67 +400,73 @@ async function addReview(){
 }
 
 async function displayReviews(){
+
     let container = document.getElementById("reviewsContainer");
 
-    try {
-        let response = await fetch(PROXY_GET + "&nocache=" + Date.now());
-        if(!response.ok) {
-            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one online!</p>';
+    try{
+
+        let response = await fetch(API_URL);
+
+        if(!response.ok){
+            container.innerHTML = "No reviews yet.";
             return;
         }
-        
+
         let textData = await response.text();
-        if(!textData || !textData.trim().startsWith("[")) {
-            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one online!</p>';
+
+        if(!textData || !textData.startsWith("[")){
+            container.innerHTML = "No reviews yet.";
             return;
         }
 
         let reviews = JSON.parse(textData);
+
         container.innerHTML = "";
 
-        if(!reviews || reviews.length === 0){
-            container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one online!</p>';
-            return;
-        }
-
         reviews.forEach(function(review){
-            let firstLetter = review.name ? review.name.charAt(0).toUpperCase() : "U";
-            let imgTag = "";
-            if (review.image && review.image.startsWith("data:image")) {
-                imgTag = `<img src="${review.image}" class="review-img-display">`;
+
+            let firstLetter = review.name.charAt(0).toUpperCase();
+
+            let imageHTML = "";
+
+            if(review.image){
+                imageHTML = `
+                <img src="${review.image}" class="review-img-display">
+                `;
             }
 
             container.innerHTML += `
             <div class="review-item">
-                <div class="review-profile">${firstLetter}</div>
+
+                <div class="review-profile">
+                    ${firstLetter}
+                </div>
+
                 <div class="review-content">
+
                     <div class="review-top">
                         <div class="review-name">${review.name}</div>
                         <div class="review-stars">${review.rating}</div>
                     </div>
-                    <div class="review-text">${review.text}</div>
-                    ${imgTag}
+
+                    <div class="review-text">
+                        ${review.text}
+                    </div>
+
+                    ${imageHTML}
+
                 </div>
+
             </div>
             `;
         });
-    } catch (error) {
+
+    }catch(error){
+
         console.error(error);
-        container.innerHTML = '<p class="loading-text">No reviews yet. Be the first to leave one online!</p>';
+
+        container.innerHTML = "Failed to load reviews.";
     }
-}
-
-function setRating(ratingValue){
-    document.getElementById("reviewRating").value = ratingValue;
-    let stars = document.querySelectorAll(".star-rating span");
-
-    stars.forEach((star, index) => {
-        if(index < ratingValue){
-            star.style.color = "gold";
-        }else{
-            star.style.color = "#ccc";
-        }
-    });
 }
 </script>
 
